@@ -1,58 +1,40 @@
-Student A00107408.
-Date 2016-2017.
-Msc Project.
-===========================================================================================
+Student: A00107408.
+Date: 2016-2017.
+Project: Msc Project.
+Title: A Resftfull WebService using Play Framework 2.5.
+================================================================================================
+
+Requirements:
+-------------
+
+MongoDB         - For user's data ie; Heart Rate and Datetime.
+MySQL RDBMS     - For user accounts.
+Android App     - Create user account and login. Sends warning text when 50 > HR < 160 BPM.
+
+See 'build.sbt' and 'project/plugins' for further details on project dependencies plugins used.
+
+Change DB URLs in 'application.conf' to run on your own system with you database configurations.
+
+You will need a FitBit account with an app which grants access to this web service to access your
+health data. Use your FitBit token to access your FitBit data. Change this token information in
+the javascript files in this project to fetch your data from your own app,
+ie; 'public/javascripts/fetchHR.js' where 'token&client_id' = you own token.
+
+
+Built Using:
+------------
 
 Play Framework 2.5
-MongoDB with reactive mongo driver. Non Blocking. For user data ie, Heart rate and date time.
-MySQL Relational Database for user acounts.
+Scala SBT 'build.sbt' project.
+Reactive Mongo driver. Asysnchronous Non Blocking MongoDB I/O.
+MySQL
 
-This is your new Play application
-=================================
 
-This file will be packaged with your application when using `activator dist`.
+Description:
+------------
 
-There are several demonstration files available in this template.
-
-Controllers
-===========
-
-- HomeController.java:
-
-  Shows how to handle simple HTTP requests.
-
-- AsyncController.java:
-
-  Shows how to do asynchronous programming when handling a request.
-
-- CountController.java:
-
-  Shows how to inject a component into a controller and use the component when
-  handling requests.
-
-Components
-==========
-
-- Module.java:
-
-  Shows how to use Guice to bind all the components needed by your application.
-
-- Counter.java:
-
-  An example of a component that contains state, in this case a simple counter.
-
-- ApplicationTimer.java:
-
-  An example of a component that starts when the application starts and stops
-  when the application stops.
-
-Filters
-=======
-
-- Filters.java:
-
-  Creates the list of HTTP filters used by your application.
-
-- ExampleFilter.java
-
-  A simple filter that adds a header to every response.
+ This SBT project uses PlayEbeans to facilitate the creation of user accounts. The users data
+ is then taken from my FitBit account from the FitBit Api. This is written to MongoDB collections
+ and is read from there in turn and displayed using HighCharts.
+ Javascript code determines is this data falls within pre-set parameters. If not, the accompanying
+ Android app texts the I.C.E of potential problems.
