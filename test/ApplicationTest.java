@@ -16,6 +16,7 @@ import play.libs.F;
 import play.libs.F.*;
 import play.twirl.api.Content;
 
+import static play.mvc.Results.ok;
 import static play.test.Helpers.*;
 import static org.junit.Assert.*;
 
@@ -38,9 +39,23 @@ public class ApplicationTest {
         assertTrue(html.body().contains("Please Login or Register to Continue."));
     }
 
-   /* @Test
+  /*  @Test
     public void testLoginRoute(){
-        Result result = routeAndCall(fakeRequest(GET, "/login"));
-        assertThat(result).isNotNull();
+        Result result = route(fakeRequest("GET", "/login")
+                .method(GET);
+        assert(contentAsString(result)).equals(200); //contains(200)
+    }
+
+  /*  @Test
+    public void test() {
+        running(fakeApplication(), new Runnable() {
+            public void run() {
+                String username = "Aerus";
+                Result res = route(fakeRequest("GET", "/")
+                        .withSession("username", username)
+                        .withSession("key","value"));
+                assert(contentAsString(res).contains(username));
+            }
+        });
     }*/
 }
