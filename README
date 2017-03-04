@@ -42,3 +42,26 @@ Play Framework 2.5
 Scala SBT 'build.sbt' project.
 Reactive Mongo driver. Asynchronous Non Blocking MongoDB I/O.
 MySQL
+
+
+'application.conf' ignored by GitHub:
+-------------------------------------
+
+mongodb.uri = "mongodb://localhost/MscProject"
+
+play.modules.enabled += "play.modules.reactivemongo.ReactiveMongoModule"
+
+mongo-async-driver {
+  akka {
+    loglevel = WARNING
+  }
+}
+
+db {
+  default.url = "jdbc:mysql://localhost/mscproject?autoReconnect=true&useSSL=false"
+  default.driver = com.mysql.jdbc.Driver
+  default.username = root
+  default.password = "yourPassword"
+}
+
+ebean.default="models.*"
