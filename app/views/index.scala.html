@@ -1,0 +1,12 @@
+@(message: String)
+
+@main("Diaganose") {
+
+<h1>@message</h1>
+<br><br>
+<div id="actions">
+ <a class="btn success" id="add" href="@routes.UserController.createUser()">Register New Account</a>
+ <a class="btn success" id="login" href="@routes.UserController.login()">Login</a>
+</div>
+<footer>Disclaimer: Diaganose is not a medical service.</footer>
+}

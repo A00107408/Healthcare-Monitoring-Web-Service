@@ -1,0 +1,9 @@
+package models
+
+import play.api.libs.json.Json
+
+case class HeartRate(bpm: Int, time: String)
+
+object HeartRate {
+  implicit val formatter = Json.format[HeartRate]
+}

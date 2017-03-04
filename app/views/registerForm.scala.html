@@ -1,0 +1,29 @@
+@(userForm: Form[User])
+
+@import helper._
+
+@import b3.vertical.fieldConstructor
+
+@main("Register") {
+
+ <div id="register">
+  <h1>Please Register a User.</h1>
+
+  @b3.form(routes.UserController.saveUser()) {
+
+  <fieldset>
+     @b3.text(userForm("name"), '_label -> "User's name", '_help -> "")
+     @b3.number(userForm("age"), '_label -> "User's age", '_help -> "")
+     @b3.text(userForm("username"), '_label -> "Username", '_help -> "")
+     @b3.password(userForm("password"), '_label -> "Password", '_help -> "")
+  </fieldset>
+
+  <div class="actions">
+    <input type="submit" value="Create this user" class="btn primary"> or
+    <a href="@routes.UserController.index()" class="btn">Cancel</a>
+  </div>
+ </div>
+
+ }
+
+}

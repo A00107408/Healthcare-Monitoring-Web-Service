@@ -1,0 +1,28 @@
+@(message: String)
+
+
+@main("Diaganose") {
+
+ <script src="@routes.Assets.versioned("javascripts/HRSpline.js")" type="text/javascript"></script>
+ <script src="@routes.Assets.versioned("javascripts/fetchHR.js")" type="text/javascript"></script>
+<!-- <script src="@routes.Assets.versioned("javascripts/fetchWeight.js")" type="text/javascript"></script> -->
+
+ <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+ <script src="https://code.highcharts.com/highcharts.js"></script>
+ <script src="https://code.highcharts.com/modules/exporting.js"></script>
+
+
+
+ <h1>@message</h1><br>
+
+ <h2>Heart Rate Chart:  </h2> <p id="HRMessage"></p>
+
+ <div id="HRSpline" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+ <h2>Weight Chart:  </h2> <p id="WeightMessage"></p>
+
+ <div id="WeightGraph" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+
+ <footer>Disclaimer: Diaganose is not a medical service.</footer>
+}
