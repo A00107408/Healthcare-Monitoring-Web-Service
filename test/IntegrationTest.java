@@ -21,5 +21,4 @@ public class IntegrationTest {
             assertTrue(browser.pageSource().contains("Please Login or Register to Continue."));
         });
     }
-
 }
