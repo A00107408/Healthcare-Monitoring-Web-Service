@@ -23,7 +23,7 @@ public class UserController extends Controller {
     }
 
     public Result index(){
-        return ok(index.render("Please Login or Register to Continue "));
+        return ok(index.render("Please Login or Register to Continue."));
     }
 
     /**
