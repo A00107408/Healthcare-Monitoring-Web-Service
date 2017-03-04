@@ -9,5 +9,5 @@ import play.mvc.Result;
 
 public class DashController extends Controller {
 
-    public Result dashboard(){return ok(views.html.dashboard.render("Welcome to your Dashoard!"));}
+    public Result dashboard(){return ok(views.html.dashboard.render("Welcome to your Dashboard!"));}
 }
