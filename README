@@ -1,8 +1,18 @@
 Student: A00107408.
 Date: 2016-2017.
 Project: Msc Project.
-Title: A Resftfull WebService using Play Framework 2.5.
-================================================================================================
+Title: A Restfull WebService using Play Framework 2.5.
+=================================================================================================
+
+Description:
+------------
+
+ This SBT project uses PlayEbeans to facilitate the creation of user accounts. The users data
+ is then taken from my FitBit account from the FitBit Api. This is written to MongoDB collections
+ and is read from there in turn and displayed using HighCharts.
+ Javascript code determines if this data falls within pre-set parameters. If not, the accompanying
+ Android app texts the I.C.E of potential problems.
+
 
 Requirements:
 -------------
@@ -11,9 +21,13 @@ MongoDB         - For user's data ie; Heart Rate and Datetime.
 MySQL RDBMS     - For user accounts.
 Android App     - Create user account and login. Sends warning text when 50 > HR < 160 BPM.
 
-See 'build.sbt' and 'project/plugins' for further details on project dependencies plugins used.
+See 'build.sbt' and 'project/plugins' for further details on project dependencies & plugins used.
 
 Change DB URLs in 'application.conf' to run on your own system with you database configurations.
+ie; MongoDB database name in this instance is MscProject.
+ie; MySQL database name in this instance is  mscproject.
+MongoDB running as service. Post number not important.
+Change root user and password to suit your own configuration.
 
 You will need a FitBit account with an app which grants access to this web service to access your
 health data. Use your FitBit token to access your FitBit data. Change this token information in
@@ -26,15 +40,5 @@ Built Using:
 
 Play Framework 2.5
 Scala SBT 'build.sbt' project.
-Reactive Mongo driver. Asysnchronous Non Blocking MongoDB I/O.
+Reactive Mongo driver. Asynchronous Non Blocking MongoDB I/O.
 MySQL
-
-
-Description:
-------------
-
- This SBT project uses PlayEbeans to facilitate the creation of user accounts. The users data
- is then taken from my FitBit account from the FitBit Api. This is written to MongoDB collections
- and is read from there in turn and displayed using HighCharts.
- Javascript code determines is this data falls within pre-set parameters. If not, the accompanying
- Android app texts the I.C.E of potential problems.

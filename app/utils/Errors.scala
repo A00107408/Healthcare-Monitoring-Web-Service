@@ -6,7 +6,7 @@ import play.api.libs.json.JsPath
 object Errors {
 
   /**
-    * Small utility to show the errors as a string
+    * Utility to show errors as a string
     */
   def show(errors: Seq[(JsPath, Seq[ValidationError])]): String = {
     errors.map {

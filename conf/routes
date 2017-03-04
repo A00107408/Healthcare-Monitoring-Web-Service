@@ -8,9 +8,6 @@ POST    /login                      controllers.UserController.validate
 
 GET     /dashboard                  controllers.DashController.dashboard
 
-GET     /plumber                    controllers.Plumber.stuff
-POST    /plumber:i                  controllers.Plumber.stuffb(i: String)
-
 POST    /heartrates                 controllers.HRController.createFromJson
 POST    /heartrates/bulk            controllers.HRController.createBulkFromJson
 
@@ -18,18 +15,3 @@ GET     /heartrates                 controllers.HRController.findAll
 
 GET     /javascriptRoutes           controllers.HRController.javascriptRoutes
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
-
-
-
-
-POST    /cities/add                 controllers.CityController.create(name: String, population: Int)
-POST    /cities/                    controllers.CityController.createFromJson
-POST    /cities/bulk                controllers.CityController.createBulkFromJson
-
-GET     /cities                     controllers.CityController.findByName(name: String)
-
-POST    /persons/add                controllers.PersonController.create(name: String, age: Int)
-POST    /persons/                   controllers.PersonController.createFromJson
-POST    /persons/bulk               controllers.PersonController.createBulkFromJson
-
-GET     /persons/:name              controllers.PersonController.findByName(name: String)

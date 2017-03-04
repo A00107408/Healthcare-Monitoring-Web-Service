@@ -55,9 +55,7 @@ class HRController @Inject()(val reactiveMongoApi: ReactiveMongoApi)(implicit ex
     Ok(
       JavaScriptReverseRouter("jsRoutes")(
         routes.javascript.HRController.createBulkFromJson,
-        routes.javascript.HRController.findAll,
-        routes.javascript.Plumber.stuff,
-        routes.javascript.Plumber.stuffb
+        routes.javascript.HRController.findAll
       )
     ).as("text/javascript")
   }
@@ -80,27 +78,6 @@ class HRController @Inject()(val reactiveMongoApi: ReactiveMongoApi)(implicit ex
         Future.successful(BadRequest("invalid json"))
     }
   }
-
-  /**
-    * Creat many heart rate Mongo entries
-    * from POSTed json
-    */
- /* def createBulkFromJson = Action.async(parse.json) { request =>
-    //Transformation silent in case of failures.
-    val documents = for {
-      heartRate       <- request.body.asOpt[JsArray].toStream
-      maybeHeartRate   <- heartRate.value
-      validHeartRate   <- maybeHeartRate.transform(transformer).asOpt.toList
-    } yield validHeartRate
-
-    for {
-      heartRate <- hrFuture
-      multiResult <- heartRate.bulkInsert(documents = documents, ordered = true)
-    } yield {
-      Logger.debug(s"Successfully inserted with multiResult: $multiResult")
-      Created(s"Created ${multiResult.n} heartRate")
-    }
-  }*/
 
   /**
     * A method to write heart rates to MongoDB
