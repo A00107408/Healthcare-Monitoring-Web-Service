@@ -33,8 +33,6 @@ import org.junit.Test;
 
 import static play.test.Helpers.contentAsString;
 
-
-
 /**
  * JUnit tests that can call all parts of a play app.
  */
