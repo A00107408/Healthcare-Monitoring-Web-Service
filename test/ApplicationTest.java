@@ -39,15 +39,18 @@ import static play.test.Helpers.contentAsString;
 
 public class ApplicationTest {
 
+   // Application fakeApp = (Application) Helpers.fakeApplication();
+
     @Test
     public void renderTemplate() {
         Content html = views.html.index.render("Please Login or Register to Continue.");
         assertEquals("text/html", html.contentType());
         assertTrue(html.body().contains("Please Login or Register to Continue."));
     }
-
+/*
     @Test
     public void badRoute() {
+
         Result result = Helpers.route(fakeRequest(GET, "/bad"));
         assert(contentAsString(result)).equals(null);
     }
