@@ -31,48 +31,45 @@ var processResponse = function(res) {
     if (!res.ok) {
         throw new Error('Fitbit API request failed: ' + res);
     }
-    var contentType = res.headers.get('content-type')
+    var contentType = res.headers.get('content-type');
     if (contentType && contentType.indexOf("application/json") !== -1) {
         return res.json();
     } else {
         throw new Error('JSON expected but received ' + contentType);
     }
-}
+};
 
 // Extract BPM and time from JSon recieved.
 var formatHeartRate = function(timeSeries) {
 
-    return timeSeries['activities-heart'].heartRateZones.map(
+    return timeSeries['activities-heart-intraday'].dataset.map(
         //var Json = Json.stringify(measurement);
         function(measurement) {
             return [
-                   // ("{ \"time\":\"" +measurement.time + "\""),
-                    (measurement.value)
+                    ("{ \"time\":\"" +measurement.time + "\""),
+                    ("\"value\":" +measurement.value + " }")
             ];
         }
     );
-}
+};
 
 var wrapSendJson = function(timeSeries){
 
     // My server expects well formed JSon
     // to write to MongoDB.
     // Use JSRouter to POST JSon via AJAX.
- /*   var JsonString = "[";
+    var JsonString = "[";
     JsonString = JsonString.concat(timeSeries);
-    JsonString = JsonString.concat("]");*/
+    JsonString = JsonString.concat("]");
 
-    var x = JSON.parse(timeSeries);
-    console.log("Jsonstring:  " +x);
-
-    // POST JSon to MongoDB
- //   var r = jsRoutes.controllers.HRController.createBulkFromJson();
- //   $.ajax({url: r.url, type: r.type, contentType: "application/json", data: JsonString });
+    // POST historical heart rates as JSon to MongoDB
+    var r = jsRoutes.controllers.HRController.writeHistoricalHR();
+    $.ajax({url: r.url, type: r.type, contentType: "application/json", data: JsonString });
 
     //Once JSon sent to MongoDB, fetch it back out and Graph it.
-    //Defined in HRSpline.js. Wait 4 seconds to allow write to Mongo.
-   // window.setTimeout(getMongoHR(),9000);
-}
+    //Defined in masterDetail.js. Wait 4 seconds to allow write to Mongo.
+    window.setTimeout(getMongoMasterHR(),9000);
+};
 
 //$.when(wrapSendJson()).getMongoHR(function2());
 
@@ -80,11 +77,8 @@ var wrapSendJson = function(timeSeries){
 // fetch not compatible with IE.
 // Use token in header for OAuth 2.0 authentication.
 fetch(
-   // 'https://api.fitbit.com/1/user/-/activities/heart/date/2016-07-19/1d/1sec/time/06:00:00/06:05:00.json',
-   // 'https://api.fitbit.com/1/user/-/activities/heart/date/2016-07-19/1d/1sec.json',
-   //'https://api.fitbit.com/1/user/-/activities/heart/date/2016-07-19/2016-07-20/1m/time/12:00/15:00.json',
-   //'https://api.fitbit.com/1/user/-/activities/heart/date/2016-07-19/2016-07-20/1sec.json',
-   'https://api.fitbit.com/1/user/-/activities/heart/date/today/1d.json',
+    'https://api.fitbit.com/1/user/-/activities/heart/date/2016-07-19/1d/1min/time/06:00:00/18:00:00.json',
+
     {
         headers: new Headers({
             'Authorization': 'Bearer ' + fitbitAccessToken

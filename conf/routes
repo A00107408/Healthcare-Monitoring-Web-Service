@@ -6,12 +6,21 @@ POST    /users                      controllers.UserController.saveUser
 GET     /login                      controllers.UserController.login
 POST    /login                      controllers.UserController.validate
 
+POST    /bpmMessages                controllers.SMSController.sendSMS
+
+POST    /androidLogin               controllers.UserController.androidValidate
+
 GET     /dashboard                  controllers.DashController.dashboard
 
 POST    /heartrates                 controllers.HRController.createFromJson
 POST    /heartrates/bulk            controllers.HRController.createBulkFromJson
 
+
 GET     /heartrates                 controllers.HRController.findAll
 
-GET     /javascriptRoutes           controllers.HRController.javascriptRoutes
+GET     /heartrates/master          controllers.HRController.readHistoricalHR
+POST    /heartrates/master          controllers.HRController.writeHistoricalHR
+
+
+GET     /javascriptRoutes           controllers.JavaRoutesController.javascriptRoutes
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

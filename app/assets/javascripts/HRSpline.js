@@ -1,11 +1,16 @@
-/*
-    A00107408 27-02-2017.
-    Plot Heart rates on interactive graph.
-    Uses Highchart's spline
-    http://www.highcharts.com/demo/dynamic-update
-*/
+/* Student: A00107408
+ * Date: 2016-2017
+ * Project: Msc Software Engineering Project.
+ * College: Athlone Institute of Technology.
+ *
+ * Credits:
+ * HighCharts Interactive Spline :-
+ * http://www.highcharts.com/demo/dynamic-update
+ */
 
 var plotSpline = function(xs, ys){
+
+    var r = jsRoutes.controllers.SMSController.sendSMS();
 
     Highcharts.setOptions({
         global: {
@@ -25,6 +30,7 @@ var plotSpline = function(xs, ys){
                    var series = this.series[0];
                    var index=0;
                    var res = document.getElementById('HRMessage');
+                   var WarningSent = false;
 
                    setInterval(function () {
 
@@ -32,15 +38,40 @@ var plotSpline = function(xs, ys){
                             y = ys[index];
                         if (y < 50 ){
                             res.style.color = "blue";
-                            res.innerHTML = "Heart Rate too Low.";
+                            res.innerHTML = "Heart Rate too Low. Sending SMS.";
+
+
+                            var Json = " {\"bpm\": \"" +y +"\"}";
+                            console.log("BPM outside Range: " +Json);
+                            $.ajax({url: r.url, type: r.type, contentType: "application/json", data: Json});
+
+                        /*    var msg = "Heart Rate too Low."
+                            if(WarningSent == false){
+                                BPMWarnings(msg);
+                                WarningSent = true;
+                                res.innerHTML = "BPM Low Warning Dispatched.";
+                            }*/
                         }
-                        else if (y > 165){
+                        else if (y > 160){
                             res.style.color = "red";
-                            res.innerHTML = "Heart Rate too High.";
+                            res.innerHTML = "Heart Rate too High. Sending SMS.";
+
+                            var Jsonb = " {\"bpm\": \"" +y +"\"}";
+                            console.log("BPM Outside Range: " +Jsonb);
+                           // $.ajax({url: r.url, type: r.type, data: Jsonb});
+
+                            $.ajax({url: r.url, type: r.type, contentType: "application/json", data: Jsonb});
+
+                        /*    var msg = "Heart Rate too High.";
+                            if(WarningSent == false){
+                                BPMWarnings(msg);
+                                WarningSent = true;
+                                res.innerHTML = "BPM High Warning Dispatched.";
+                            }*/
                         }
                         else{
                             res.style.color = "black";
-                            res.innerHTML = "BPM in Range."
+                            res.innerHTML = "BPM in Range.";
                         }
                         series.addPoint([x, y], true, true); index++;
                    }, 600);
@@ -110,6 +141,7 @@ var getMongoHR = function(){
     var ys = [];
     var r = jsRoutes.controllers.HRController.findAll();
 
+    // Ajax GET from MongoDB.
     $.getJSON( r.url, function( data ) {
         var xAxis = data.map(
             function(measurement) {
@@ -132,9 +164,10 @@ var getMongoHR = function(){
             ys[i] = parseInt(yAxis[i]);
         }
 
-
-
-        if(yAxis === null){console.log("yAxis is null");}               //remove
         plotSpline(xs, ys);
     });
-}
+};
+
+/*$( document ).ready(function() {
+    getMongoHR();
+});*/

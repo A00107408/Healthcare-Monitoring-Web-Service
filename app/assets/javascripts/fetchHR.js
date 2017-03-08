@@ -31,13 +31,13 @@ var processResponse = function(res) {
     if (!res.ok) {
         throw new Error('Fitbit API request failed: ' + res);
     }
-    var contentType = res.headers.get('content-type')
+    var contentType = res.headers.get('content-type');
     if (contentType && contentType.indexOf("application/json") !== -1) {
         return res.json();
     } else {
         throw new Error('JSON expected but received ' + contentType);
     }
-}
+};
 
 // Extract BPM and time from JSon recieved.
 var formatHeartRate = function(timeSeries) {
@@ -51,7 +51,7 @@ var formatHeartRate = function(timeSeries) {
             ];
         }
     );
-}
+};
 
 var wrapSendJson = function(timeSeries){
 
@@ -69,7 +69,7 @@ var wrapSendJson = function(timeSeries){
     //Once JSon sent to MongoDB, fetch it back out and Graph it.
     //Defined in HRSpline.js. Wait 4 seconds to allow write to Mongo.
     window.setTimeout(getMongoHR(),9000);
-}
+};
 
 //$.when(wrapSendJson()).getMongoHR(function2());
 

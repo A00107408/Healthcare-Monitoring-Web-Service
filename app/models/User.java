@@ -1,3 +1,13 @@
+/* Student: A00107408
+ * Date: 2016-2017
+ * Project: Msc Software Engineering Project.
+ * College: Athlone Institute of Technology.
+ *
+ * Credits:
+ * PlayEbean and forms Based On: Lightbeand Activator seed project :-
+ * https://github.com/playframework/play-java-ebean-example.git (30-01-2017)
+ */
+
 package models;
 
 import com.avaje.ebean.Model;
