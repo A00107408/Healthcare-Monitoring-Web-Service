@@ -18,12 +18,14 @@ import play.api.Logger
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._
-
 import reactivemongo.api.ReadPreference
 import reactivemongo.play.json._
 import reactivemongo.play.json.collection.JSONCollection
 
 import scala.concurrent.{ExecutionContext, Future}
+import System.out.{println => puts}
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
   * Created by eoghan on 16/02/2017.
@@ -39,6 +41,7 @@ class HRController @Inject()(val reactiveMongoApi: ReactiveMongoApi)(implicit ex
     * ie: time and heart rate value
     */
   val transformer: Reads[JsObject] =
+      Reads.jsPickBranch[JsString](__ \ "user") and
       Reads.jsPickBranch[JsString](__ \ "time") and
       Reads.jsPickBranch[JsNumber](__ \ "value") and
       Reads.jsPut(__ \ "created", JsNumber(new java.util.Date().getTime())) reduce
@@ -50,6 +53,7 @@ class HRController @Inject()(val reactiveMongoApi: ReactiveMongoApi)(implicit ex
     * named hrFuture for "Heart Rate Future value".
     * Document Collection name = 'activities-heart-intraday'
     */
+
   def hrFuture: Future[JSONCollection] = database.map(_.collection[JSONCollection]("activities-heart-intraday"))
 
   def masterFuture: Future[JSONCollection] = database.map(_.collection[JSONCollection]("historical"))
@@ -59,19 +63,19 @@ class HRController @Inject()(val reactiveMongoApi: ReactiveMongoApi)(implicit ex
     * ie; from a form or from postman during development.
     */
   def createFromJson = Action.async(parse.json) { request =>
-    request.body.transform(transformer) match {
-      case JsSuccess(heartRate, _) =>
-        for {
-          heartRates <- hrFuture
-         // lastError <- heartRates.insert(heartRate)
-        }
-          yield {
-            Logger.debug(s"Successfully inserted ")//with LastError: $lastError")
-            Created("Created 1 heartRate")
-          }
-      case _ =>
-        Future.successful(BadRequest("invalid json"))
-    }
+      request.body.transform(transformer) match {
+          case JsSuccess(heartRate, _) =>
+              for {
+                heartRates <- hrFuture
+               // lastError <- heartRates.insert(heartRate)
+              }
+              yield {
+                Logger.debug(s"Successfully inserted ")//with LastError: $lastError")
+                Created("Created 1 heartRate")
+              }
+          case _ =>
+            Future.successful(BadRequest("invalid json"))
+      }
   }
 
   /**
@@ -80,20 +84,20 @@ class HRController @Inject()(val reactiveMongoApi: ReactiveMongoApi)(implicit ex
     * Ajax.
     */
   def createBulkFromJson = Action.async(parse.json) { request =>
-    //Transformation silent in case of failures.
-    val documents = for {
-      heartRate        <- request.body.asOpt[JsArray].toStream
-      maybeHeartRate   <- heartRate.value
-      validHeartRate   <- maybeHeartRate.transform(transformer).asOpt.toList
-    } yield validHeartRate
+      //Transformation silent in case of failures.
+      val documents = for {
+        heartRate        <- request.body.asOpt[JsArray].toStream
+        maybeHeartRate   <- heartRate.value
+        validHeartRate   <- maybeHeartRate.transform(transformer).asOpt.toList
+      } yield validHeartRate
 
-    for {
-      heartRate <- hrFuture
-      multiResult <- heartRate.bulkInsert(documents = documents, ordered = true)
-    } yield {
-      Logger.debug(s"Successfully inserted with multiResult: $multiResult")
-      Created(s"Created ${multiResult.n} heartRate")
-    }
+      for {
+        heartRate <- hrFuture
+        multiResult <- heartRate.bulkInsert(documents = documents, ordered = true)
+      } yield {
+        Logger.debug(s"Successfully inserted with multiResult: $multiResult")
+        Created(s"Created ${multiResult.n} heartRate")
+      }
   }
 
   /**
@@ -104,60 +108,66 @@ class HRController @Inject()(val reactiveMongoApi: ReactiveMongoApi)(implicit ex
     */
   def writeHistoricalHR = Action.async(parse.json) { request => //customise max body size.
 
-    //Transformation silent in case of failures.
-    val documents = for {
-      heartRate        <- request.body.asOpt[JsArray].toStream
-      maybeHeartRate   <- heartRate.value
-      validHeartRate   <- maybeHeartRate.transform(transformer).asOpt.toList
-    } yield validHeartRate
+      //Transformation silent in case of failures.
+      val documents = for {
+        heartRate        <- request.body.asOpt[JsArray].toStream
+        maybeHeartRate   <- heartRate.value
+        validHeartRate   <- maybeHeartRate.transform(transformer).asOpt.toList
+      } yield validHeartRate
 
-    for {
-      heartRate <- masterFuture
-      multiResult <- heartRate.bulkInsert(documents = documents, ordered = true)
-    } yield {
-      Logger.debug(s"Successfully inserted with multiResult: $multiResult")
-      Created(s"Created ${multiResult.n} heartRate")
-    }
+      for {
+        heartRate <- masterFuture
+        multiResult <- heartRate.bulkInsert(documents = documents, ordered = true)
+      } yield {
+        Logger.debug(s"Successfully inserted with multiResult: $multiResult")
+        Created(s"Created ${multiResult.n} heartRate")
+      }
   }
 
   /**
-    * A Scala method to read all heart rates from the MongoDB in the same
-    * order as they were entered.
+    * A Scala method to read all heart rates for a given user from the MongoDB
+    * in the same order as they were entered.
     */
-  def findAll() = Action.async {
+  def findAll(user: String) = Action.async {
 
-    val cursor: Future[List[JsObject]] = hrFuture.flatMap { heartrates =>
+      puts("username: " +user)
 
-     // heartrates.find(Json.obj("value" -> value)).
+      val cursor: Future[List[JsObject]] = hrFuture.flatMap { heartrates =>
+
+          /**Find All Heart Rates for given user*/
+          heartrates.find(Json.obj("user" -> user)).
 
           /**Find All Heart Rates*/
-          heartrates.find(Json.obj()).
+          //  heartrates.find(Json.obj()).
 
           /**Sort them by creation date*/
           sort(Json.obj("created" -> 1)).
 
           /**perform the query and get a cursor of JsObject*/
           cursor[JsObject](ReadPreference.primary).collect[List]()
-    }
+      }
 
-    // everything's ok! Let's reply with a JsValue
-    cursor.map { heartrates =>
-      Ok(Json.toJson(heartrates))
-    }
+      // everything's ok! Let's reply with a JsValue
+      cursor.map { heartrates =>
+        Ok(Json.toJson(heartrates))
+      }
   }
 
   /**
-    * A Scala method to read all heart rates from the master collection
-    * in the same order as they were entered.
+    * A Scala method to read all heart rates from the MongoDB in the same
+    * order as they were entered.
     */
-  def readHistoricalHR() = Action.async {
+  def SMSMaker(user: String) = Action.async {
 
-    val cursor: Future[List[JsObject]] = masterFuture.flatMap { heartrates =>
+    puts("username: " +user)
 
-      // heartrates.find(Json.obj("value" -> value)).
+    val cursor: Future[List[JsObject]] = hrFuture.flatMap { heartrates =>
 
-      /**Find All Heart Rates*/
-      heartrates.find(Json.obj()).
+      /**Find All Heart Rates for given user*/
+      heartrates.find(Json.obj("user" -> user)).
+
+        /**Find All Heart Rates*/
+        //  heartrates.find(Json.obj()).
 
         /**Sort them by creation date*/
         sort(Json.obj("created" -> 1)).
@@ -166,9 +176,54 @@ class HRController @Inject()(val reactiveMongoApi: ReactiveMongoApi)(implicit ex
         cursor[JsObject](ReadPreference.primary).collect[List]()
     }
 
+
     // everything's ok! Let's reply with a JsValue
     cursor.map { heartrates =>
-      Ok(Json.toJson(heartrates))
+      //Ok(Json.toJson(heartrates))
+      var x = Json.toJson(heartrates)
+      var y = x.toString();
+      puts("cursor map: " +y)
+      Ok("Cardiac Arrest")
     }
+  }
+
+/**  def deleteAll(user: String){
+
+    heartRate <- hrFuture
+    val selector1 = BSONDocument("user" -> user)
+
+    val futureRemove1 = heartRate.remove(selector1)
+
+    futureRemove1.onComplete { // callback
+      case Failure(e) => throw e
+      case Success(writeResult) => println("successfully removed document")
+    }
+  }*/
+
+  /**
+    * A Scala method to read all heart rates from the master collection
+    * in the same order as they were entered.
+    */
+  def readHistoricalHR(user: String) = Action.async {
+
+      val cursor: Future[List[JsObject]] = masterFuture.flatMap { heartrates =>
+
+          /**Find All Heart Rates for given user*/
+          heartrates.find(Json.obj("user" -> user)).
+
+          /**Find All Heart Rates*/
+          // heartrates.find(Json.obj()).
+
+          /**Sort them by creation date*/
+          sort(Json.obj("created" -> 1)).
+
+          /**perform the query and get a cursor of JsObject*/
+          cursor[JsObject](ReadPreference.primary).collect[List]()
+      }
+
+      // everything's ok! Let's reply with a JsValue
+      cursor.map { heartrates =>
+        Ok(Json.toJson(heartrates))
+      }
   }
 }

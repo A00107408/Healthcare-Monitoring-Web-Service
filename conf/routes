@@ -9,18 +9,19 @@ POST    /login                      controllers.UserController.validate
 POST    /bpmMessages                controllers.SMSController.sendSMS
 
 POST    /androidLogin               controllers.UserController.androidValidate
+POST    /androidListen              controllers.SMSController.makeSMS
+GET     /androidListen              controllers.SMSController.sendSMS
 
-GET     /dashboard                  controllers.DashController.dashboard
+GET     /dashboard                  controllers.UserController.dashboard
 
 POST    /heartrates                 controllers.HRController.createFromJson
 POST    /heartrates/bulk            controllers.HRController.createBulkFromJson
 
+GET     /heartrates                 controllers.HRController.findAll(user: String)
+#DELETE  /heartrates                 controllers.HRController.deleteAll(user: String)
 
-GET     /heartrates                 controllers.HRController.findAll
-
-GET     /heartrates/master          controllers.HRController.readHistoricalHR
+GET     /heartrates/master          controllers.HRController.readHistoricalHR(user: String)
 POST    /heartrates/master          controllers.HRController.writeHistoricalHR
-
 
 GET     /javascriptRoutes           controllers.JavaRoutesController.javascriptRoutes
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

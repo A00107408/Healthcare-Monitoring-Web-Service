@@ -1,31 +1,36 @@
 @(message: String)
 
-@main("Diaganose") {
+@main("Pulse") {
 
- <link href="@routes.Assets.versioned("stylesheets/bootstrap.min.css")" rel="stylesheet">
- <link href="@routes.Assets.versioned("stylesheets/main.css")" rel="stylesheet">
 
- <script src="@routes.Assets.versioned("javascripts/jquery-2.2.1.js")" type="text/javascript"></script>
- <script src="@routes.Assets.versioned("javascripts/bootstrap.js")" type="text/javascript"></script>
 
- <script src="@routes.Assets.versioned("javascripts/MasterDetail.js")" type="text/javascript"></script>
+<!-- <script src="@routes.Assets.versioned("javascripts/jquery-2.2.1.js")" type="text/javascript"></script>
+ <script src="@routes.Assets.versioned("javascripts/bootstrap.js")" type="text/javascript"></script> -->
+
+<!-- <script src="@routes.Assets.versioned("javascripts/MasterDetail.js")" type="text/javascript"></script> -->
  <script src="@routes.Assets.versioned("javascripts/HRSpline.js")" type="text/javascript"></script>
 
- <script src="@routes.Assets.versioned("javascripts/fetchHR.js")" type="text/javascript"></script>
+<!-- <script src="@routes.Assets.versioned("javascripts/fetchHR.js")" type="text/javascript"></script>
  <script src="@routes.Assets.versioned("javascripts/fetchMasterHR.js")" type="text/javascript"></script>
 
  <script src="@routes.Assets.versioned("javascripts/fetchSleep.js")" type="text/javascript"></script>
+
+ <script src="@routes.Assets.versioned("javascripts/fetchSedentaryMinutes.js")" type="text/javascript"></script>
+ <script src="@routes.Assets.versioned("javascripts/fetchWeight.js")" type="text/javascript"></script> -->
+
+
 
  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
  <script src="https://code.highcharts.com/highcharts.js"></script>
  <script src="https://code.highcharts.com/modules/exporting.js"></script>
 
 
- <h1>@message</h1><br>
-<h2>Heart Rate Chart:  </h2> <p id="HRMessage"></p>
-<div id="HRSpline" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-<p> Historical Heart Rate Data:</p><br><br>
-<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+ <h1>Dashboard: </h1><p id="uName">@message</p><br>
+
+ <p id="HRMessage"></p>
+ <div id="HRSpline" style="min-width: 310px; height: 400px; margin: 0 auto"></div><br><br>
+ <p> Historical Heart Rate Data:</p>
+ <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 
  <!-- Nav tabs -->
  <ul class="nav nav-tabs" role="tablist">
@@ -48,5 +53,5 @@
 
  </div>
 
- <footer>Disclaimer: Diaganose is not a medical service.</footer>
+ <footer>Disclaimer: Pulse is not a medical device.</footer>
 }

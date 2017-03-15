@@ -8,9 +8,9 @@
  * http://www.highcharts.com/demo/dynamic-update
  */
 
-var plotSpline = function(xs, ys){
+var plotSpline = function(user, xs, ys){
 
-    var r = jsRoutes.controllers.SMSController.sendSMS();
+   var r = jsRoutes.controllers.SMSController.makeSMS();
 
     Highcharts.setOptions({
         global: {
@@ -135,11 +135,24 @@ var plotSpline = function(xs, ys){
    });
 };
 
-var getMongoHR = function(){
+var deleteFromMongo = function(){
+
+    var URL = jsRoutes.controllers.HRController.deleteAll(user);
+
+    $.ajax({
+        url: URL,
+        type: 'DELETE',
+        success: function(result) {
+            console.log("Delete Result: " +result);
+        }
+    });
+};
+
+var getMongoHR = function(user){
 
     var xs = [];
     var ys = [];
-    var r = jsRoutes.controllers.HRController.findAll();
+    var r = jsRoutes.controllers.HRController.findAll(user);
 
     // Ajax GET from MongoDB.
     $.getJSON( r.url, function( data ) {
@@ -164,10 +177,12 @@ var getMongoHR = function(){
             ys[i] = parseInt(yAxis[i]);
         }
 
-        plotSpline(xs, ys);
+       // deleteFromMongo(user);
+        plotSpline(user, xs, ys);
     });
 };
 
-/*$( document ).ready(function() {
-    getMongoHR();
-});*/
+$( document ).ready(function() {
+    var uName = document.getElementById('uName').innerHTML;
+    getMongoHR(uName);
+});

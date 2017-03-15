@@ -40,18 +40,11 @@ var processResponse = function(res) {
 };
 
 // Extract BPM and time from JSon recieved.
-var formatHeartRate = function(timeSeries) {
+var formatSleep = function(timeSeries) {
 
-    var user = document.getElementById('uName').innerHTML;
-
-    return timeSeries['activities-heart-intraday'].dataset.map(
-        //var Json = Json.stringify(measurement);
+     return timeSeries.sleep[0].minuteData.map(
         function(measurement) {
-            return [
-                    ("{ \"user\":\"" +user + "\""),
-                    ("\"time\":\"" +measurement.time + "\""),
-                    ("\"value\":" +measurement.value + " }")
-            ];
+            return JSON.stringify({time:measurement.dateTime,value:measurement.value});
         }
     );
 };
@@ -61,28 +54,29 @@ var wrapSendJson = function(timeSeries){
     // My server expects well formed JSon
     // to write to MongoDB.
     // Use JSRouter to POST JSon via AJAX.
-    var JsonString = "[";
+ /*   var JsonString = "[";
     JsonString = JsonString.concat(timeSeries);
-    JsonString = JsonString.concat("]");
-    console.log("JsonString: " +JsonString);
+    JsonString = JsonString.concat("]");*/
+
+   // var x = JSON.stringify(timeSeries);
+    console.log("Jsonstring:  " +timeSeries);
 
     // POST JSon to MongoDB
-    var r = jsRoutes.controllers.HRController.createBulkFromJson();
-    $.ajax({url: r.url, type: r.type, contentType: "application/json", data: JsonString });
+ //   var r = jsRoutes.controllers.HRController.createBulkFromJson();
+ //   $.ajax({url: r.url, type: r.type, contentType: "application/json", data: JsonString });
 
-    var uName = document.getElementById('uName').innerHTML;
     //Once JSon sent to MongoDB, fetch it back out and Graph it.
     //Defined in HRSpline.js. Wait 4 seconds to allow write to Mongo.
-    window.setTimeout(getMongoHR(uName),9000);
+   // window.setTimeout(getMongoHR(),9000);
 };
 
 //$.when(wrapSendJson()).getMongoHR(function2());
 
-// Use new fetch API to GET Heart Rates from cloud.
+// Use new fetch API to GET Sleep from cloud.
 // fetch not compatible with IE.
 // Use token in header for OAuth 2.0 authentication.
 fetch(
-    'https://api.fitbit.com/1/user/-/activities/heart/date/2016-07-19/1d/1sec/time/06:00:00/06:05:00.json',
+   'https://api.fitbit.com/1/user/-/sleep/date/2016-09-02.json',
     {
         headers: new Headers({
             'Authorization': 'Bearer ' + fitbitAccessToken
@@ -91,8 +85,8 @@ fetch(
         method: 'GET'
     }
 ).then(processResponse)             //Currying of functions
-.then(formatHeartRate)              //returns Json response
-.then(wrapSendJson)                 //to next function for
+.then(formatSleep)                   //returns Json response
+//.then(wrapSendJson)                 //to next function for
 .catch(function(error) {            //processing, catches
     console.log(error);             //any errors.
 });

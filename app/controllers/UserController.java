@@ -1,5 +1,4 @@
 
-
 package controllers;
 
 import models.User;
@@ -18,6 +17,7 @@ import javax.inject.Inject;
 
 public class UserController extends Controller {
 
+    private String UserName = "";
     private FormFactory formFactory;
 
     @Inject
@@ -49,7 +49,7 @@ public class UserController extends Controller {
         }
         registerForm.get().save();
 
-        return ok(index.render("You have been directed here."));
+        return ok(index.render("Account Created."));
     }
 
     /**
@@ -80,10 +80,16 @@ public class UserController extends Controller {
             if (user == null) {
                 return ok(views.html.loginForm.render(loginForm));
             } else {
-                session("username", loginForm.get().username);
-                return redirect(routes.DashController.dashboard());
+               // session("username", loginForm.get().username);
+               UserName = username;
+               return ok(views.html.dashboard.render(username));
             }
         }
+    }
+
+    public Result dashboard(){
+
+        return ok(views.html.dashboard.render(UserName));
     }
 
     /**
@@ -92,8 +98,6 @@ public class UserController extends Controller {
      * Play route actions only return HTTP responses.
      */
     public Result androidValidate(){
-
-        SMSController SMS = new SMSController();
 
         Form<User> loginForm = formFactory.form(User.class).bindFromRequest();
         if(loginForm.hasErrors()) {
@@ -109,27 +113,13 @@ public class UserController extends Controller {
 
             if (user == null) {
                 System.out.println("User not found.");
-                return ok(views.html.loginForm.render(loginForm));
+                //return ok(views.html.loginForm.render(loginForm));
+                return(ok("NOT_FOUND"));
             } else {
-                // session("username", loginForm.get().username);
+                session("username", loginForm.get().username);
                 System.out.println("User Logged in.");
-                //return redirect(routes.DashController.dashboard());
-
-              //  Result msg = SMS.sendSMS();
-
-              //  String text = String.valueOf(msg);
-
-              //  return(ok(text));
-
-                return(ok("Cardiac Arrest"));
+              return (ok("USER_FOUND"));
             }
-
-            //JsonNode json = (JsonNode) Json.parse("{\"success\": \"true\"}");
-
-            //return json;
-            //  String bpmMessage = "Cardiac Arrest";
-
-            //return(ok(bpmMessage));p
         }
     }
 }

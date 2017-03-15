@@ -40,17 +40,21 @@ var processResponse = function(res) {
 };
 
 // Extract BPM and time from JSon recieved.
-var formatHeartRate = function(timeSeries) {
+var formatWeight = function(timeSeries) {
 
-    return timeSeries['activities-heart'].heartRateZones.map(
+    var bla = JSON.stringify(timeSeries);
+    console.log("DIST: " +bla);
+
+    //return timeSeries['sleep'].dataset.map(
+   /* return timeSeries.sleep.dataset.map(
         //var Json = Json.stringify(measurement);
         function(measurement) {
             return [
                    // ("{ \"time\":\"" +measurement.time + "\""),
-                    (measurement.value)
+                    (measurement.efficiency)
             ];
         }
-    );
+    );*/
 };
 
 var wrapSendJson = function(timeSeries){
@@ -62,7 +66,7 @@ var wrapSendJson = function(timeSeries){
     JsonString = JsonString.concat(timeSeries);
     JsonString = JsonString.concat("]");*/
 
-    var x = JSON.parse(timeSeries);
+    var x = JSON.stringify(timeSeries);
     console.log("Jsonstring:  " +x);
 
     // POST JSon to MongoDB
@@ -80,11 +84,8 @@ var wrapSendJson = function(timeSeries){
 // fetch not compatible with IE.
 // Use token in header for OAuth 2.0 authentication.
 fetch(
-   // 'https://api.fitbit.com/1/user/-/activities/heart/date/2016-07-19/1d/1sec/time/06:00:00/06:05:00.json',
-   // 'https://api.fitbit.com/1/user/-/activities/heart/date/2016-07-19/1d/1sec.json',
-   //'https://api.fitbit.com/1/user/-/activities/heart/date/2016-07-19/2016-07-20/1m/time/12:00/15:00.json',
-   //'https://api.fitbit.com/1/user/-/activities/heart/date/2016-07-19/2016-07-20/1sec.json',
-   'https://api.fitbit.com/1/user/-/activities/heart/date/today/1d.json',
+    //' https://api.fitbit.com/1/user/-/body/log/fat/date/2016-07-01/2017-02-28.json',
+    'https://api.fitbit.com/1/user/-/activities/distance/date/today/1d/1m/time/08:00/11:30.json',
     {
         headers: new Headers({
             'Authorization': 'Bearer ' + fitbitAccessToken
@@ -93,8 +94,8 @@ fetch(
         method: 'GET'
     }
 ).then(processResponse)             //Currying of functions
-.then(formatHeartRate)              //returns Json response
-.then(wrapSendJson)                 //to next function for
+.then(formatWeight)                 //returns Json response
+//.then(wrapSendJson)               //to next function for
 .catch(function(error) {            //processing, catches
     console.log(error);             //any errors.
 });

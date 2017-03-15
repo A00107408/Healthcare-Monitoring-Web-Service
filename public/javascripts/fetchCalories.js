@@ -40,20 +40,21 @@ var processResponse = function(res) {
 };
 
 // Extract BPM and time from JSon recieved.
-var formatHeartRate = function(timeSeries) {
+var formatWeight = function(timeSeries) {
 
-    var user = document.getElementById('uName').innerHTML;
+    var bla = JSON.stringify(timeSeries);
+    console.log("DIST: " +bla);
 
-    return timeSeries['activities-heart-intraday'].dataset.map(
+    //return timeSeries['sleep'].dataset.map(
+   /* return timeSeries.sleep.dataset.map(
         //var Json = Json.stringify(measurement);
         function(measurement) {
             return [
-                    ("{ \"user\":\"" +user + "\""),
-                    ("\"time\":\"" +measurement.time + "\""),
-                    ("\"value\":" +measurement.value + " }")
+                   // ("{ \"time\":\"" +measurement.time + "\""),
+                    (measurement.efficiency)
             ];
         }
-    );
+    );*/
 };
 
 var wrapSendJson = function(timeSeries){
@@ -61,19 +62,20 @@ var wrapSendJson = function(timeSeries){
     // My server expects well formed JSon
     // to write to MongoDB.
     // Use JSRouter to POST JSon via AJAX.
-    var JsonString = "[";
+ /*   var JsonString = "[";
     JsonString = JsonString.concat(timeSeries);
-    JsonString = JsonString.concat("]");
-    console.log("JsonString: " +JsonString);
+    JsonString = JsonString.concat("]");*/
+
+    var x = JSON.stringify(timeSeries);
+    console.log("Jsonstring:  " +x);
 
     // POST JSon to MongoDB
-    var r = jsRoutes.controllers.HRController.createBulkFromJson();
-    $.ajax({url: r.url, type: r.type, contentType: "application/json", data: JsonString });
+ //   var r = jsRoutes.controllers.HRController.createBulkFromJson();
+ //   $.ajax({url: r.url, type: r.type, contentType: "application/json", data: JsonString });
 
-    var uName = document.getElementById('uName').innerHTML;
     //Once JSon sent to MongoDB, fetch it back out and Graph it.
     //Defined in HRSpline.js. Wait 4 seconds to allow write to Mongo.
-    window.setTimeout(getMongoHR(uName),9000);
+   // window.setTimeout(getMongoHR(),9000);
 };
 
 //$.when(wrapSendJson()).getMongoHR(function2());
@@ -82,7 +84,8 @@ var wrapSendJson = function(timeSeries){
 // fetch not compatible with IE.
 // Use token in header for OAuth 2.0 authentication.
 fetch(
-    'https://api.fitbit.com/1/user/-/activities/heart/date/2016-07-19/1d/1sec/time/06:00:00/06:05:00.json',
+    //'https://api.fitbit.com/1/user/-/activities/calories/date/2016-09-01/2017-02-11.json',
+    'https://api.fitbit.com/1/user/-/activities/calories/date/2014-09-01/1d/15min/time/12:30/12:45.json',
     {
         headers: new Headers({
             'Authorization': 'Bearer ' + fitbitAccessToken
@@ -91,8 +94,8 @@ fetch(
         method: 'GET'
     }
 ).then(processResponse)             //Currying of functions
-.then(formatHeartRate)              //returns Json response
-.then(wrapSendJson)                 //to next function for
+.then(formatWeight)                 //returns Json response
+//.then(wrapSendJson)               //to next function for
 .catch(function(error) {            //processing, catches
     console.log(error);             //any errors.
 });
