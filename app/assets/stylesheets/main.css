@@ -83,3 +83,22 @@ table.computers .header a {
     height: 200px;
     margin: 10px, 10px, 10px, 10px;
 }
+
+#lowerHR {
+    width: 100%;
+    background-color: lightgrey;
+    border-style: solid;
+    border-width: 2px;
+    border-color: green;
+    border-radius: 10px;
+}
+
+#upperHR {
+    width: 30%;
+    background-color: lightgrey;
+    border-style: solid;
+    border-width: 2px;
+    border-color: green;
+    border-radius: 10px;
+    position: static;
+}

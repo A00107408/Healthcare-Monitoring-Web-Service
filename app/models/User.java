@@ -12,8 +12,10 @@ package models;
 
 import com.avaje.ebean.Model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.UniqueConstraint;
 
 /**
  * Created by eoghan on 01/02/2017.
@@ -27,7 +29,10 @@ public class User extends Model {
 
     public String name;
     public int age;
+
+   // @Column(unique=true)
     public String username;
+
     public String password;
 
     public static Find<Long,User> find = new Find<Long,User>(){};
@@ -46,7 +51,7 @@ public class User extends Model {
     public static User authenticate(String username, String password){
 
         // get the user with username
-        User user = find.where().eq("username", username).findUnique();
+        User user = find.where().eq("username", username).findUnique(); //Crash if not unique!!
         if (user != null) {
             if ( password .equals(user.password) ) {
                 return user;

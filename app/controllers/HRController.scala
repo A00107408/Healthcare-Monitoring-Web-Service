@@ -157,7 +157,7 @@ class HRController @Inject()(val reactiveMongoApi: ReactiveMongoApi)(implicit ex
     * A Scala method to read all heart rates from the MongoDB in the same
     * order as they were entered.
     */
-  def SMSMaker(user: String) = Action.async {
+ /* def SMSMaker(user: String) = Action.async {
 
     puts("username: " +user)
 
@@ -185,7 +185,7 @@ class HRController @Inject()(val reactiveMongoApi: ReactiveMongoApi)(implicit ex
       puts("cursor map: " +y)
       Ok("Cardiac Arrest")
     }
-  }
+  }*/
 
 /**  def deleteAll(user: String){
 

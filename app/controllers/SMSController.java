@@ -12,40 +12,65 @@ import java.util.Objects;
 
 public class SMSController extends Controller {
 
+
+   private String user = "NONE";
    private String msg = "OK";
-   private String bpm = "0";
 
     /**
      * Construct SMS warning content based on JSon values
      * POSTed from the front end.
      * @return The SMS content to the app.
      */
-    public Result makeSMS(){
+    public Result HRLow(){
 
         System.out.println("json posted in");
         JsonNode json = request().body().asJson();
         if(json == null) {
             System.out.println("Expecting Json data.");
         } else {
-            bpm = json.findPath("bpm").textValue();
-            if(bpm == null) {
-                System.out.println("Missing parameter [bpm]");
+            user = json.findPath("user").textValue();
+            if(user == null) {
+                System.out.println("Missing parameter [user]");
             } else {
-                System.out.println("sending SMS");
-                msg = "Cardiac Arrest";
+                msg = "LOW";
             }
         }
         return (ok());
     }
 
     /**
-     *
+     * Construct SMS warning content based on JSon values
+     * POSTed from the front end.
+     * @return The SMS content to the app.
+     */
+    public Result HRHigh(){
+
+        System.out.println("json posted in");
+        JsonNode json = request().body().asJson();
+        if(json == null) {
+            System.out.println("Expecting Json data.");
+        } else {
+            user = json.findPath("user").textValue();
+            if(user == null) {
+                System.out.println("Missing parameter [user]");
+            } else {
+                msg = "HIGH";
+            }
+        }
+        return (ok());
+    }
+
+    /**
+     * Android App Volley Library listens to this method
+     * for a response. The response will form the SMS body.
      * @return the SMS content to the app for transmission.
      */
-    public Result sendSMS() {
+    public Result volleyResponse() {
 
-        String Warning;
-        Warning = msg;
+        String Warning = user;
+        Warning = Warning.concat(msg);
+
+        user = "NONE";
         msg = "OK";
         return(ok(Warning));
     }

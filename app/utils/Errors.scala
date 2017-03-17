@@ -13,5 +13,4 @@ object Errors {
       case (path, e) => path.toString() + " : " + e.map(_.toString).mkString(" ")
     }.mkString("\n")
   }
-
 }

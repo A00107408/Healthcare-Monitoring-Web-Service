@@ -48,8 +48,23 @@ public class UserController extends Controller {
             return badRequest(views.html.registerForm.render(registerForm));
         }
         registerForm.get().save();
-
+        System.out.println("here");
         return ok(index.render("Account Created."));
+    }
+
+    /**
+     * Handle Android Registration submission.
+     * The reponse to Volley is what is needed here.
+     * Play Actions only return Result types which are HTTP codes.
+     */
+    public Result saveAndroidUser() {
+        Form<User> registerForm = formFactory.form(User.class).bindFromRequest();
+        if(registerForm.hasErrors()) {
+            return ok("ERRORS");
+        }
+        registerForm.get().save();
+        System.out.println("Android User added to DB.");
+        return ok("USER_CREATED");
     }
 
     /**
@@ -80,16 +95,18 @@ public class UserController extends Controller {
             if (user == null) {
                 return ok(views.html.loginForm.render(loginForm));
             } else {
-               // session("username", loginForm.get().username);
-               UserName = username;
-               return ok(views.html.dashboard.render(username));
+                session("username", loginForm.get().username);
+                //send user name to front end as a parameter.
+                UserName = username;
+                return ok(views.html.dashboard.render(username));
             }
         }
     }
 
     public Result dashboard(){
-
-        return ok(views.html.dashboard.render(UserName));
+        String name = UserName;
+        UserName = "";
+        return ok(views.html.dashboard.render(name));
     }
 
     /**
@@ -111,9 +128,9 @@ public class UserController extends Controller {
 
             user = User.authenticate(username, password);
 
+            // Return Response to Android Volley.
             if (user == null) {
                 System.out.println("User not found.");
-                //return ok(views.html.loginForm.render(loginForm));
                 return(ok("NOT_FOUND"));
             } else {
                 session("username", loginForm.get().username);
@@ -121,5 +138,14 @@ public class UserController extends Controller {
               return (ok("USER_FOUND"));
             }
         }
+    }
+
+    /**
+     * Log user off server.
+     */
+    public Result logout() {
+        session().clear();
+        System.out.println("User Logged off.");
+        return ok();
     }
 }

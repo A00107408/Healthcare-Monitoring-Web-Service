@@ -42,6 +42,7 @@ var processResponse = function(res) {
 // Extract BPM and time from JSon recieved.
 var formatHeartRate = function(timeSeries) {
 
+    //append the username to the data.
     var user = document.getElementById('uName').innerHTML;
 
     return timeSeries['activities-heart-intraday'].dataset.map(
@@ -58,27 +59,25 @@ var formatHeartRate = function(timeSeries) {
 
 var wrapSendJson = function(timeSeries){
 
-    // My server expects well formed JSon
-    // to write to MongoDB.
-    // Use JSRouter to POST JSon via AJAX.
+    // Json.Stringify doesn't add '[ ]'
+    // expected by the server.
+    // Use JSRouter to POST Json via AJAX.
     var JsonString = "[";
     JsonString = JsonString.concat(timeSeries);
     JsonString = JsonString.concat("]");
-    console.log("JsonString: " +JsonString);
 
     // POST JSon to MongoDB
     var r = jsRoutes.controllers.HRController.createBulkFromJson();
     $.ajax({url: r.url, type: r.type, contentType: "application/json", data: JsonString });
 
     var uName = document.getElementById('uName').innerHTML;
+
     //Once JSon sent to MongoDB, fetch it back out and Graph it.
-    //Defined in HRSpline.js. Wait 4 seconds to allow write to Mongo.
-    window.setTimeout(getMongoHR(uName),9000);
+    //Defined in HRSpline.js.
+    getMongoHR(uName);
 };
 
-//$.when(wrapSendJson()).getMongoHR(function2());
-
-// Use new fetch API to GET Heart Rates from cloud.
+// Use fetch API to GET Heart Rates from cloud.
 // fetch not compatible with IE.
 // Use token in header for OAuth 2.0 authentication.
 fetch(

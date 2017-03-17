@@ -18,7 +18,8 @@ class JavaRoutesController extends Controller{
       JavaScriptReverseRouter("jsRoutes")(
         routes.javascript.HRController.createBulkFromJson,
         routes.javascript.HRController.findAll,
-        routes.javascript.SMSController.makeSMS,
+        routes.javascript.SMSController.HRHigh,
+        routes.javascript.SMSController.HRLow,
         routes.javascript.HRController.writeHistoricalHR,
         routes.javascript.HRController.readHistoricalHR
       )

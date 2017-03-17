@@ -10,7 +10,8 @@
 
 var plotSpline = function(user, xs, ys){
 
-   var r = jsRoutes.controllers.SMSController.makeSMS();
+    var a = jsRoutes.controllers.SMSController.HRLow();
+    var b = jsRoutes.controllers.SMSController.HRHigh();
 
     Highcharts.setOptions({
         global: {
@@ -30,44 +31,29 @@ var plotSpline = function(user, xs, ys){
                    var series = this.series[0];
                    var index=0;
                    var res = document.getElementById('HRMessage');
-                   var WarningSent = false;
 
                    setInterval(function () {
 
+                        var lowerBPM = $('#lowerBPM').val();
+                        var upperBPM = $('#upperBPM').val();
+
                         var x = (new Date()).getTime(), //xs[index],
                             y = ys[index];
-                        if (y < 50 ){
+                        if (y < lowerBPM ){
                             res.style.color = "blue";
-                            res.innerHTML = "Heart Rate too Low. Sending SMS.";
+                            res.innerHTML = "Heart Rate too Low. SMS Sent.";
 
-
-                            var Json = " {\"bpm\": \"" +y +"\"}";
-                            console.log("BPM outside Range: " +Json);
-                            $.ajax({url: r.url, type: r.type, contentType: "application/json", data: Json});
-
-                        /*    var msg = "Heart Rate too Low."
-                            if(WarningSent == false){
-                                BPMWarnings(msg);
-                                WarningSent = true;
-                                res.innerHTML = "BPM Low Warning Dispatched.";
-                            }*/
+                            var Json = " {\"user\": \"" +user +"\"}";
+                            console.log("BPM outside Range for " +user +". Warning sent.");
+                            $.ajax({url: a.url, type: a.type, contentType: "application/json", data: Json});
                         }
-                        else if (y > 160){
+                        else if (y > upperBPM){
                             res.style.color = "red";
-                            res.innerHTML = "Heart Rate too High. Sending SMS.";
+                            res.innerHTML = "Heart Rate too High. SMS Sent.";
 
-                            var Jsonb = " {\"bpm\": \"" +y +"\"}";
-                            console.log("BPM Outside Range: " +Jsonb);
-                           // $.ajax({url: r.url, type: r.type, data: Jsonb});
-
-                            $.ajax({url: r.url, type: r.type, contentType: "application/json", data: Jsonb});
-
-                        /*    var msg = "Heart Rate too High.";
-                            if(WarningSent == false){
-                                BPMWarnings(msg);
-                                WarningSent = true;
-                                res.innerHTML = "BPM High Warning Dispatched.";
-                            }*/
+                            var Jsonb = " {\"user\": \"" +user +"\"}";
+                            console.log("BPM outside Range for " +user +". Warning sent.");
+                            $.ajax({url: b.url, type: b.type, contentType: "application/json", data: Jsonb});
                         }
                         else{
                             res.style.color = "black";
@@ -116,7 +102,6 @@ var plotSpline = function(user, xs, ys){
            name: 'Heart Rate Data',
            data: (function () {
 
-
                // initialise chart history
               var data = [],
                    time = (new Date()).getTime(),
@@ -128,24 +113,10 @@ var plotSpline = function(user, xs, ys){
                         y: ys[i]
                    });
                }
-
                return data;
            }())
        }]
    });
-};
-
-var deleteFromMongo = function(){
-
-    var URL = jsRoutes.controllers.HRController.deleteAll(user);
-
-    $.ajax({
-        url: URL,
-        type: 'DELETE',
-        success: function(result) {
-            console.log("Delete Result: " +result);
-        }
-    });
 };
 
 var getMongoHR = function(user){
@@ -167,6 +138,12 @@ var getMongoHR = function(user){
              }
         );
 
+        if(yAxis.length < 1){
+            //Json not read yet. Wait 1 sec and try again.
+            window.setTimeout(getMongoHR(user),1000);
+            return;
+        }
+
         //cast xAxis to DateTime for highcharts
         for (i = 0; i <= xAxis.length; i += 1) {
            xs[i] = (new Date()).getTime(xAxis[i]);
@@ -177,12 +154,11 @@ var getMongoHR = function(user){
             ys[i] = parseInt(yAxis[i]);
         }
 
-       // deleteFromMongo(user);
         plotSpline(user, xs, ys);
     });
 };
 
-$( document ).ready(function() {
+/*$( document ).ready(function() {
     var uName = document.getElementById('uName').innerHTML;
     getMongoHR(uName);
-});
+});*/
