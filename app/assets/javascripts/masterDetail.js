@@ -152,7 +152,7 @@ var plotMaster = function(data){
 
         // prepare the detail chart
         var detailData = [],
-            detailStart = Date.UTC(2017, 3, 13);
+            detailStart = Date.UTC(2016, 3, 13);
 
         jQuery.each(masterChart.series[0].data, function(i, point) {
             if (point.x >= detailStart) {
@@ -169,7 +169,8 @@ var plotMaster = function(data){
                 marginLeft: 50,
                 marginRight: 20,
                 style: {
-                    position: 'absolute'
+                    position: 'absolute',
+                    margin: '20px'
                 }
             },
             credits: {
@@ -235,18 +236,24 @@ var plotMaster = function(data){
         .appendTo($container);
 
     var $masterContainer = $('<div id="master-container">')
-        .css({ position: 'absolute', top: 300, height: 80, width: '100%' })
+        .css({ position: 'absolute', top: 300, height: 80, width: '55%' })
         .appendTo($container);
 
     // create master and in its callback, create the detail chart
     createMaster();
 };
 
-var getMongoMasterHR = function(){
+var getMongoMasterHR = function(user){
 
     var xs = [];
     var ys = [];
-    var r = jsRoutes.controllers.HRController.readHistoricalHR();
+
+    // Wait for DOM.
+    $( document ).ready(function(){});
+
+    //not working. Just user findAll masterGraph for demo.
+    //var r = jsRoutes.controllers.HRController.readHistoricalHR(user);
+    var r = jsRoutes.controllers.HRController.findAll(user);
 
     // Ajax GET from MongoDB.
     $.getJSON( r.url, function( data ) {
@@ -261,28 +268,21 @@ var getMongoMasterHR = function(){
              }
         );
 
+        //Json not read yet. Wait 1 sec and try again.
+        if(yAxis.length < 1){
+            window.setTimeout(getMongoMasterHR(user),1000);
+            return;
+        }
+
         //cast xAxis to DateTime for highcharts
-        for (i = 0; i <= xAxis.length; i += 1) {
+        for (i = 0; i < xAxis.length; i += 1) {
            xs[i] = (new Date()).getTime(xAxis[i]);
         }
 
         //cast yAxis from strings to array of ints for highcharts
-        for (i = 0; i <= yAxis.length; i += 1) {
+        for (i = 0; i < yAxis.length; i += 1) {
             ys[i] = parseInt(yAxis[i]);
         }
-
-       /* var arr = [];
-        for(var x = 0; x < 100; x++){
-            arr[x] = [];
-            for(var y = 0; y < 100; y++){
-                arr[x][y] = x*y;
-            }
-        }*/
-
         plotMaster(ys);
     });
 };
-
-/*$( document ).ready(function() {
-    getMongoMasterHR();
-});*/

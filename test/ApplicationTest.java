@@ -43,7 +43,7 @@ public class ApplicationTest {
 
     @Test
     public void renderTemplate() {
-        Content html = views.html.index.render("Please Login or Register to Continue.");
+        Content html = views.html.index.render();//("Please Login or Register to Continue.");
         assertEquals("text/html", html.contentType());
         assertTrue(html.body().contains("Please Login or Register to Continue."));
     }

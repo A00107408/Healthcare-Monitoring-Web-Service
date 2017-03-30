@@ -1,4 +1,4 @@
-@(userForm: Form[User])
+@(userForm: Form[User], message: String)
 
 @import helper._
 
@@ -7,21 +7,20 @@
 @main("Login") {
 
  <div id="logindiv">
-    <h1>Enter Credentials to Log In.</h1>
+    <h1>@message</h1>
 
     @b3.form(routes.UserController.validate()) {
 
-    <fieldset>
-        @b3.text(userForm("username"), '_label -> "Username", '_help -> "")
-        @b3.password(userForm("password"), '_label -> "Password", '_help -> "")
-    </fieldset>
+     <fieldset>
+        @b3.text(userForm("username"), '_label -> "Username", '_help -> "Required")
+        @b3.password(userForm("password"), '_label -> "Password", '_help -> "Required")
+     </fieldset>
 
-    <div class="actions">
+     <div class="actions">
         <input type="submit" value="Login" class="btn primary"> or
-        <a href="@routes.UserController.index()" class="btn">Cancel</a>
-    </div>
+        <a href="@routes.HomeController.index()" class="btn">Cancel</a>
+     </div>
+    }
  </div>
-
- }
 
 }

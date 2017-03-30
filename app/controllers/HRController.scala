@@ -56,7 +56,7 @@ class HRController @Inject()(val reactiveMongoApi: ReactiveMongoApi)(implicit ex
 
   def hrFuture: Future[JSONCollection] = database.map(_.collection[JSONCollection]("activities-heart-intraday"))
 
-  def masterFuture: Future[JSONCollection] = database.map(_.collection[JSONCollection]("historical"))
+  def masterFuture: Future[JSONCollection] = database.map(_.collection[JSONCollection]("historical-heart"))
 
   /**
     * Create a single MongoDB entry from Json POSTed
@@ -153,40 +153,6 @@ class HRController @Inject()(val reactiveMongoApi: ReactiveMongoApi)(implicit ex
       }
   }
 
-  /**
-    * A Scala method to read all heart rates from the MongoDB in the same
-    * order as they were entered.
-    */
- /* def SMSMaker(user: String) = Action.async {
-
-    puts("username: " +user)
-
-    val cursor: Future[List[JsObject]] = hrFuture.flatMap { heartrates =>
-
-      /**Find All Heart Rates for given user*/
-      heartrates.find(Json.obj("user" -> user)).
-
-        /**Find All Heart Rates*/
-        //  heartrates.find(Json.obj()).
-
-        /**Sort them by creation date*/
-        sort(Json.obj("created" -> 1)).
-
-        /**perform the query and get a cursor of JsObject*/
-        cursor[JsObject](ReadPreference.primary).collect[List]()
-    }
-
-
-    // everything's ok! Let's reply with a JsValue
-    cursor.map { heartrates =>
-      //Ok(Json.toJson(heartrates))
-      var x = Json.toJson(heartrates)
-      var y = x.toString();
-      puts("cursor map: " +y)
-      Ok("Cardiac Arrest")
-    }
-  }*/
-
 /**  def deleteAll(user: String){
 
     heartRate <- hrFuture
@@ -207,6 +173,8 @@ class HRController @Inject()(val reactiveMongoApi: ReactiveMongoApi)(implicit ex
   def readHistoricalHR(user: String) = Action.async {
 
       val cursor: Future[List[JsObject]] = masterFuture.flatMap { heartrates =>
+
+        puts("Master username: " +user)
 
           /**Find All Heart Rates for given user*/
           heartrates.find(Json.obj("user" -> user)).

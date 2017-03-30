@@ -6,23 +6,48 @@
 
     <title>@title</title>
 
-  <!--  <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/bootstrap.min.css")">
-    <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")"> -->
+    <meta name="viewport" content="initial-scale=1, width=device-width, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta name="description" content="A00107408 MSc Project">
+    <meta name="author" content="Taken from McCane Activator seed project">
 
-    <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
-    <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/magHeart.png")">
-    <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/faviconb.png")">
+    <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
 
-    <script src="@routes.Assets.versioned("javascripts/jquery-2.2.1.js")" type="text/javascript"></script>
-    <script src="@routes.Assets.versioned("javascripts/bootstrap.js")" type="text/javascript"></script>
+   <!-- <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")"> -->
+
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Pacifico:400' rel='stylesheet' type='text/css'>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+
+    <script src="@routes.Assets.versioned("javascripts/home-main.js")"></script>
+
+    <script src="@routes.Assets.versioned("javascripts/bootstrap.js")"></script>
+    <script src="@routes.Assets.versioned("javascripts/jquery.easing.min.js")"></script>
+    <script src="@routes.Assets.versioned("javascripts/jquery.fly_sidemenu.js")"></script>
+    <script src="@routes.Assets.versioned("javascripts/jquery.onepage-scroll.js")"></script>
 
     <script type="text/javascript" src="@routes.JavaRoutesController.javascriptRoutes"></script>
 
     <link href="@routes.Assets.versioned("stylesheets/bootstrap.min.css")" rel="stylesheet">
-    <link href="@routes.Assets.versioned("stylesheets/main.css")" rel="stylesheet">
+    <link href="@routes.Assets.versioned("stylesheets/onepage-scroll.css")" rel="stylesheet">
+    <link href="@routes.Assets.versioned("stylesheets/fly_sidemenu.css")" rel="stylesheet">
+    <link href="@routes.Assets.versioned("stylesheets/scrolling-nav.css")" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
 
 </head>
 <body>
+
+ <nav>
+  <ul class="sidemenu">
+   <li><a href="@routes.HomeController.index()">Home</a></li>
+   <li><a href="@routes.HomeController.aboutUs()">About Us</a></li>
+   <li><a href="@routes.HomeController.contactUs()">Contact Us</a></li>
+  </ul>
+ </nav>
  @content
 </body>
 </html>

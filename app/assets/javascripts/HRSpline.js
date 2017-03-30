@@ -31,6 +31,10 @@ var plotSpline = function(user, xs, ys){
                    var series = this.series[0];
                    var index=0;
                    var res = document.getElementById('HRMessage');
+                   var bpm = document.getElementById('bpm');
+
+                   fetchSleep(); // can depend on BPM for SMS.
+                   $('#asleep').prop('checked', true);
 
                    setInterval(function () {
 
@@ -38,7 +42,7 @@ var plotSpline = function(user, xs, ys){
                         var upperBPM = $('#upperBPM').val();
 
                         var x = (new Date()).getTime(), //xs[index],
-                            y = ys[index];
+                            y = parseInt(ys[index]);    // parseInt to counteract typedef error in console?
                         if (y < lowerBPM ){
                             res.style.color = "blue";
                             res.innerHTML = "Heart Rate too Low. SMS Sent.";
@@ -59,8 +63,10 @@ var plotSpline = function(user, xs, ys){
                             res.style.color = "black";
                             res.innerHTML = "BPM in Range.";
                         }
-                        series.addPoint([x, y], true, true); index++;
-                   }, 600);
+                        series.addPoint([x, y], true, true);
+                        bpm.innerHTML = ys[index];
+                        index++;
+                   }, 1000);
                }
            }
        },
@@ -103,14 +109,14 @@ var plotSpline = function(user, xs, ys){
            data: (function () {
 
                // initialise chart history
-              var data = [],
+               var data = [],
                    time = (new Date()).getTime(),
                    i;
 
-               for (i = -50; i <= 0; i += 1) {
+               for (i = -30; i <= 0; i += 1) {
                     data.push({
                         x: time + i * 1000,
-                        y: ys[i]
+                        y: parseInt(ys[i])
                    });
                }
                return data;
@@ -119,11 +125,18 @@ var plotSpline = function(user, xs, ys){
    });
 };
 
+//Get Heart Rates from MognoDB
+//Put them into arrays for highCharts.
 var getMongoHR = function(user){
+
+    // Wait for DOM to load
+    // Typedef problems otherwise.
+    $( document ).ready(function(){});
 
     var xs = [];
     var ys = [];
     var r = jsRoutes.controllers.HRController.findAll(user);
+
 
     // Ajax GET from MongoDB.
     $.getJSON( r.url, function( data ) {
@@ -132,33 +145,32 @@ var getMongoHR = function(user){
                 return [(measurement.time)];
             }
         );
+       // var yAxis=0;
         var yAxis = data.map(
              function(measurement) {
                  return [(measurement.value)]; //Beats Per Minute
              }
         );
 
+        //TODO
+        //Code Smell
+        //Json not read from MongoDB yet.
+        // Wait 1 sec and try again.
         if(yAxis.length < 1){
-            //Json not read yet. Wait 1 sec and try again.
-            window.setTimeout(getMongoHR(user),1000);
+            setTimeout(function() { getMongoHR(user); },1000);
             return;
         }
 
         //cast xAxis to DateTime for highcharts
-        for (i = 0; i <= xAxis.length; i += 1) {
+        for (i = 0; i < xAxis.length; i += 1) {
            xs[i] = (new Date()).getTime(xAxis[i]);
         }
 
         //cast yAxis from strings to array of ints for highcharts
-        for (i = 0; i <= yAxis.length; i += 1) {
+        for (i = 0; i < yAxis.length; i += 1) {
             ys[i] = parseInt(yAxis[i]);
         }
 
         plotSpline(user, xs, ys);
     });
 };
-
-/*$( document ).ready(function() {
-    var uName = document.getElementById('uName').innerHTML;
-    getMongoHR(uName);
-});*/

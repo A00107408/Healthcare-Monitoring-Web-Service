@@ -26,7 +26,7 @@ public class UserController extends Controller {
     }
 
     public Result index(){
-        return ok(index.render("Please Login or Register to Continue."));
+        return ok(index.render());
     }
 
     /**
@@ -35,7 +35,7 @@ public class UserController extends Controller {
     public Result createUser() {
         Form<User> registerForm = formFactory.form(User.class);
         return ok(
-                views.html.registerForm.render(registerForm)
+            views.html.registerForm.render(registerForm)
         );
     }
 
@@ -48,8 +48,8 @@ public class UserController extends Controller {
             return badRequest(views.html.registerForm.render(registerForm));
         }
         registerForm.get().save();
-        System.out.println("here");
-        return ok(index.render("Account Created."));
+        Form<User> loginForm = formFactory.form(User.class);
+        return ok(views.html.loginForm.render(loginForm, "User Created. Log In To Proceed:"));
     }
 
     /**
@@ -60,6 +60,7 @@ public class UserController extends Controller {
     public Result saveAndroidUser() {
         Form<User> registerForm = formFactory.form(User.class).bindFromRequest();
         if(registerForm.hasErrors()) {
+            System.out.println("Error in user create form.");
             return ok("ERRORS");
         }
         registerForm.get().save();
@@ -72,7 +73,7 @@ public class UserController extends Controller {
      */
     public Result login() {
         Form<User> loginForm = formFactory.form(User.class);
-        return ok(views.html.loginForm.render(loginForm));
+        return ok(views.html.loginForm.render(loginForm, "Enter Credentials to Log In:"));
     }
 
     /**
@@ -82,7 +83,7 @@ public class UserController extends Controller {
 
         Form<User> loginForm = formFactory.form(User.class).bindFromRequest();
         if(loginForm.hasErrors()) {
-            return badRequest(views.html.loginForm.render(loginForm));
+            return badRequest(views.html.loginForm.render(loginForm, "Please Try Again:"));
         }
         else {
 
@@ -93,7 +94,7 @@ public class UserController extends Controller {
             user = User.authenticate(username, password);
 
             if (user == null) {
-                return ok(views.html.loginForm.render(loginForm));
+                return ok(views.html.loginForm.render(loginForm, "User Not Found. Try Again:"));
             } else {
                 session("username", loginForm.get().username);
                 //send user name to front end as a parameter.
@@ -119,7 +120,7 @@ public class UserController extends Controller {
         Form<User> loginForm = formFactory.form(User.class).bindFromRequest();
         if(loginForm.hasErrors()) {
             System.out.println("Problem with credentials.");
-            return badRequest(views.html.loginForm.render(loginForm));
+            return (ok("NOT_FOUND"));
         }
         else {
             User user = null;

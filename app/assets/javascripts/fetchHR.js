@@ -7,6 +7,7 @@
 */
 
 var fitbitAccessToken;
+var uName;
 
 // Get FitBit OAuth 2.0 token.
 // Using my app id = 2282KN.
@@ -43,7 +44,7 @@ var processResponse = function(res) {
 var formatHeartRate = function(timeSeries) {
 
     //append the username to the data.
-    var user = document.getElementById('uName').innerHTML;
+    var user = uName;//document.getElementById('uName').innerHTML;
 
     return timeSeries['activities-heart-intraday'].dataset.map(
         //var Json = Json.stringify(measurement);
@@ -66,22 +67,26 @@ var wrapSendJson = function(timeSeries){
     JsonString = JsonString.concat(timeSeries);
     JsonString = JsonString.concat("]");
 
+    //console.log(JsonString);
+
     // POST JSon to MongoDB
     var r = jsRoutes.controllers.HRController.createBulkFromJson();
     $.ajax({url: r.url, type: r.type, contentType: "application/json", data: JsonString });
 
-    var uName = document.getElementById('uName').innerHTML;
+    //var uName = document.getElementById('uName').innerHTML;
 
     //Once JSon sent to MongoDB, fetch it back out and Graph it.
     //Defined in HRSpline.js.
     getMongoHR(uName);
 };
 
+
 // Use fetch API to GET Heart Rates from cloud.
 // fetch not compatible with IE.
 // Use token in header for OAuth 2.0 authentication.
 fetch(
-    'https://api.fitbit.com/1/user/-/activities/heart/date/2016-07-19/1d/1sec/time/06:00:00/06:05:00.json',
+    'https://api.fitbit.com/1/user/-/activities/heart/date/2016-07-19/1d/1sec/time/06:00:00/6:15:00.json',
+   //'https://api.fitbit.com/1/user/-/activities/heart/date/2017-03-22/1d/1sec/time/06:00:00/07:00:00.json',
     {
         headers: new Headers({
             'Authorization': 'Bearer ' + fitbitAccessToken
@@ -94,4 +99,8 @@ fetch(
 .then(wrapSendJson)                 //to next function for
 .catch(function(error) {            //processing, catches
     console.log(error);             //any errors.
+});
+
+$( document ).ready(function(){
+    uName = document.getElementById('uName').innerHTML;
 });

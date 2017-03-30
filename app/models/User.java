@@ -30,16 +30,12 @@ public class User extends Model {
     public String name;
     public int age;
 
-   // @Column(unique=true)
+    @Column(unique=true)
     public String username;
 
     public String password;
 
     public static Find<Long,User> find = new Find<Long,User>(){};
-
-    public User(int i, String n, int age, String username, String password) {
-    }
-
 
     /**
      * Authenticate a User, from a username and clear password.

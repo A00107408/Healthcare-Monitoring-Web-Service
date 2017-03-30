@@ -23,7 +23,7 @@ public class SMSController extends Controller {
      */
     public Result HRLow(){
 
-        System.out.println("json posted in");
+        //System.out.println("json posted in");
         JsonNode json = request().body().asJson();
         if(json == null) {
             System.out.println("Expecting Json data.");
@@ -45,7 +45,7 @@ public class SMSController extends Controller {
      */
     public Result HRHigh(){
 
-        System.out.println("json posted in");
+       // System.out.println("json posted in");
         JsonNode json = request().body().asJson();
         if(json == null) {
             System.out.println("Expecting Json data.");
@@ -61,8 +61,31 @@ public class SMSController extends Controller {
     }
 
     /**
+     * Construct SMS warning content based on JSon values
+     * POSTed from the front end.
+     * @return The SMS content to the app.
+     */
+    public Result sleepChange(){
+
+        System.out.println("json posted into sleepChange");
+        JsonNode json = request().body().asJson();
+        if(json == null) {
+            System.out.println("Expecting Json data.");
+        } else {
+            user = json.findPath("user").textValue();
+            if(user == null) {
+                System.out.println("Missing parameter [user]");
+            } else {
+                msg = json.findPath("status").textValue();
+            }
+        }
+        return (ok());
+    }
+
+    /**
      * Android App Volley Library listens to this method
      * for a response. The response will form the SMS body.
+     * It will consist of the uersername and warning message.
      * @return the SMS content to the app for transmission.
      */
     public Result volleyResponse() {

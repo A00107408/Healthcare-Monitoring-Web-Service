@@ -6,13 +6,13 @@
     https://github.com/jeremiahlee/fitbit-web-demo
 */
 
-var fitbitAccessToken;
+//var fitbitAccessToken;
 
 // Get FitBit OAuth 2.0 token.
 // Using my app id = 2282KN.
 // Request access to all data entry points and redirect to localhost/dashboard.
 // If user hasn't authed with Fitbit, redirect to Fitbit OAuth Implicit Grant Flow
-if (!window.location.hash) {
+/*if (!window.location.hash) {
     window.location.replace('https://www.fitbit.com/oauth2/authorize?response_type=token&client_id=2282KN&redirect_uri=http%3A%2F%2Flocalhost:9000/dashboard&scope=activity%20nutrition%20heartrate%20location%20nutrition%20profile%20settings%20sleep%20social%20weight&expires_in=604800');
 } else {
     var fragmentQueryParameters = {};
@@ -22,11 +22,11 @@ if (!window.location.hash) {
     );
 
     fitbitAccessToken = fragmentQueryParameters.access_token;
-}
+}*/
 
 // Check for response from the cloud.
 // Ensure Json body content.
-var processResponse = function(res) {
+/*var processResponse = function(res) {
 
     if (!res.ok) {
         throw new Error('Fitbit API request failed: ' + res);
@@ -37,27 +37,28 @@ var processResponse = function(res) {
     } else {
         throw new Error('JSON expected but received ' + contentType);
     }
-};
+};*/
 
 // Extract BPM and time from JSon recieved.
-var formatWeight = function(timeSeries) {
+/*var formatSedentary = function(timeSeries) {
 
     var bla = JSON.stringify(timeSeries);
-    console.log("DIST: " +bla);
+    console.log("SEDEN: " +bla);
 
-    //return timeSeries['sleep'].dataset.map(
-   /* return timeSeries.sleep.dataset.map(
-        //var Json = Json.stringify(measurement);
+    return timeSeries['summary'].sedentaryMinutes;
+   (
         function(measurement) {
             return [
-                   // ("{ \"time\":\"" +measurement.time + "\""),
-                    (measurement.efficiency)
+                ("{ \"sedentaryMinutes\":\"" +measurement.sedentaryMinutes + "\"")//,
+                //(measurement.efficiency)
             ];
         }
-    );*/
-};
+    );
 
-var wrapSendJson = function(timeSeries){
+
+};*/
+
+/*var wrapSendJson = function(timeSeries){
 
     // My server expects well formed JSon
     // to write to MongoDB.
@@ -66,8 +67,8 @@ var wrapSendJson = function(timeSeries){
     JsonString = JsonString.concat(timeSeries);
     JsonString = JsonString.concat("]");*/
 
-    var x = JSON.stringify(timeSeries);
-    console.log("Jsonstring:  " +x);
+   // var x = JSON.stringify(timeSeries);
+   // console.log("Jsonstring:  " +x);
 
     // POST JSon to MongoDB
  //   var r = jsRoutes.controllers.HRController.createBulkFromJson();
@@ -76,16 +77,15 @@ var wrapSendJson = function(timeSeries){
     //Once JSon sent to MongoDB, fetch it back out and Graph it.
     //Defined in HRSpline.js. Wait 4 seconds to allow write to Mongo.
    // window.setTimeout(getMongoHR(),9000);
-};
+//};
 
 //$.when(wrapSendJson()).getMongoHR(function2());
 
 // Use new fetch API to GET Heart Rates from cloud.
 // fetch not compatible with IE.
 // Use token in header for OAuth 2.0 authentication.
-fetch(
-    //' https://api.fitbit.com/1/user/-/body/log/fat/date/2016-07-01/2017-02-28.json',
-    'https://api.fitbit.com/1/user/-/activities/distance/date/today/1d/1m/time/08:00/11:30.json',
+/*fetch(
+    'https://api.fitbit.com/1/user/-/activities/date/today.json',
     {
         headers: new Headers({
             'Authorization': 'Bearer ' + fitbitAccessToken
@@ -94,8 +94,8 @@ fetch(
         method: 'GET'
     }
 ).then(processResponse)             //Currying of functions
-.then(formatWeight)                 //returns Json response
-//.then(wrapSendJson)               //to next function for
+.then(formatSedentary)              //returns Json response
+.then(wrapSendJson)               //to next function for
 .catch(function(error) {            //processing, catches
     console.log(error);             //any errors.
-});
+});*/

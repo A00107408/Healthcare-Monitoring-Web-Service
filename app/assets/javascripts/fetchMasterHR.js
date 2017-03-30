@@ -42,10 +42,14 @@ var processResponse = function(res) {
 // Extract BPM and time from JSon recieved.
 var formatHeartRate = function(timeSeries) {
 
+    //append the username to the data.
+    var user = document.getElementById('uName').innerHTML;
+
     return timeSeries['activities-heart-intraday'].dataset.map(
         //var Json = Json.stringify(measurement);
         function(measurement) {
             return [
+                    ("{ \"user\":\"" +user + "\""),
                     ("{ \"time\":\"" +measurement.time + "\""),
                     ("\"value\":" +measurement.value + " }")
             ];
@@ -64,11 +68,16 @@ var wrapSendJson = function(timeSeries){
 
     // POST historical heart rates as JSon to MongoDB
     var r = jsRoutes.controllers.HRController.writeHistoricalHR();
-    $.ajax({url: r.url, type: r.type, contentType: "application/json", data: JsonString });
+
+    //not working. broken, don't know why
+    //$.ajax({url: r.url, type: r.type, contentType: "application/json", data: JsonString });
+
+    var uName = document.getElementById('uName').innerHTML;
 
     //Once JSon sent to MongoDB, fetch it back out and Graph it.
-    //Defined in masterDetail.js. Wait 4 seconds to allow write to Mongo.
-    window.setTimeout(getMongoMasterHR(),9000);
+    //Defined in masterDetail.js.
+    getMongoMasterHR(uName);
+
 };
 
 //$.when(wrapSendJson()).getMongoHR(function2());

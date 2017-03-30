@@ -43,7 +43,7 @@ var processResponse = function(res) {
 var formatWeight = function(timeSeries) {
 
     var bla = JSON.stringify(timeSeries);
-    console.log("DIST: " +bla);
+    console.log("Weight: " +bla);
 
     //return timeSeries['sleep'].dataset.map(
    /* return timeSeries.sleep.dataset.map(
@@ -80,12 +80,15 @@ var wrapSendJson = function(timeSeries){
 
 //$.when(wrapSendJson()).getMongoHR(function2());
 
-// Use new fetch API to GET Heart Rates from cloud.
+// Use new fetch API to GET Weight from cloud.
 // fetch not compatible with IE.
 // Use token in header for OAuth 2.0 authentication.
 fetch(
-    //'https://api.fitbit.com/1/user/-/activities/calories/date/2016-09-01/2017-02-11.json',
-    'https://api.fitbit.com/1/user/-/activities/calories/date/2014-09-01/1d/15min/time/12:30/12:45.json',
+    //' https://api.fitbit.com/1/user/-/body/log/fat/date/2016-07-01/2017-02-28.json',
+    //'https://api.fitbit.com/1/user/-/body/log/weight/date/2017-01-01/2017-02-16.json',
+    //'https://api.fitbit.com/1/user/-/body/log/weight/date/2017-01-20.json',
+    //'https://api.fitbit.com/1/user/-/body/log/weight/date/2017-01-01/30d.json',
+    'https://api.fitbit.com/1/user/-/body/log/weight/date/2016-12-01/2017-01-21.json',
     {
         headers: new Headers({
             'Authorization': 'Bearer ' + fitbitAccessToken

@@ -1,6 +1,5 @@
 /*
     A00107408 20-02-17.
-    Get Oauth 2.0 token and fetch data from cloud.
     Code seed taken from FitBit resources:
     https://dev.fitbit.com/docs/community-resources/   *Javascript*
     https://github.com/jeremiahlee/fitbit-web-demo
@@ -39,23 +38,21 @@ var processResponse = function(res) {
     }
 };
 
-// Extract BPM and time from JSon recieved.
-var formatSedentary = function(timeSeries) {
+// Extract Calories and time from JSon received.
+var formatWeight = function(timeSeries) {
 
-    var bla = JSON.stringify(timeSeries);
-    console.log("SEDEN: " +bla);
+    var user = document.getElementById('uName').innerHTML;
 
-    return timeSeries['summary'].sedentaryMinutes;
-  /*  (
+    return timeSeries['activities-calories-intraday'].dataset.map(
+        //var Json = Json.stringify(measurement);
         function(measurement) {
             return [
-                ("{ \"sedentaryMinutes\":\"" +measurement.sedentaryMinutes + "\"")//,
-                //(measurement.efficiency)
+                    ("{ \"user\":\"" +user + "\""),
+                    ("\"time\":\"" +measurement.time + "\""),
+                    ("\"value\":" +measurement.value + " }")
             ];
         }
-    );*/
-
-
+    );
 };
 
 var wrapSendJson = function(timeSeries){
@@ -63,29 +60,29 @@ var wrapSendJson = function(timeSeries){
     // My server expects well formed JSon
     // to write to MongoDB.
     // Use JSRouter to POST JSon via AJAX.
- /*   var JsonString = "[";
+    var JsonString = "[";
     JsonString = JsonString.concat(timeSeries);
-    JsonString = JsonString.concat("]");*/
+    JsonString = JsonString.concat("]");
 
-    var x = JSON.stringify(timeSeries);
-    console.log("Jsonstring:  " +x);
+   // var x = JSON.stringify(timeSeries);
+   // console.log("Jsonstring:  " +JsonString);
 
     // POST JSon to MongoDB
- //   var r = jsRoutes.controllers.HRController.createBulkFromJson();
- //   $.ajax({url: r.url, type: r.type, contentType: "application/json", data: JsonString });
+    var r = jsRoutes.controllers.CalorieController.createBulkFromJson();
+    $.ajax({url: r.url, type: r.type, contentType: "application/json", data: JsonString });
 
+    var uName = document.getElementById('uName').innerHTML;
     //Once JSon sent to MongoDB, fetch it back out and Graph it.
-    //Defined in HRSpline.js. Wait 4 seconds to allow write to Mongo.
-   // window.setTimeout(getMongoHR(),9000);
+    //Defined in basicLine.js.
+    getMongoCal(uName);
 };
 
-//$.when(wrapSendJson()).getMongoHR(function2());
 
-// Use new fetch API to GET Heart Rates from cloud.
+// Use fetch API to GET Heart Rates from cloud.
 // fetch not compatible with IE.
 // Use token in header for OAuth 2.0 authentication.
 fetch(
-    'https://api.fitbit.com/1/user/-/activities/date/today.json',
+    'https://api.fitbit.com/1/user/-/activities/calories/date/2017-02-01/1d/15min/time/06:00/18:00.json',
     {
         headers: new Headers({
             'Authorization': 'Bearer ' + fitbitAccessToken
@@ -94,7 +91,7 @@ fetch(
         method: 'GET'
     }
 ).then(processResponse)             //Currying of functions
-.then(formatSedentary)              //returns Json response
+.then(formatWeight)                 //returns Json response
 .then(wrapSendJson)               //to next function for
 .catch(function(error) {            //processing, catches
     console.log(error);             //any errors.
