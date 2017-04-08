@@ -46,17 +46,23 @@ var sleepStatus;
 // Extract sleep status and time from JSon received.
 var extractStatus = function(timeSeries) {
 
-    return timeSeries.sleep[0].minuteData.map(
-        function(measurement) {
-            //return JSON.stringify({time:measurement.dateTime,value:measurement.value});
+    //FitBit API sleep log starts AND ends with sleep state.
+    //For Demo, generate random awake state.
+    var x = Math.random(); //between 0 & 1.
+    if(x > 0.7){ //30% chance of wearer waking up.
+        sleepStatus = 3; // generate random awake for demo.
+    }else{
+        return timeSeries.sleep[0].minuteData.map(
+            function(measurement) {
+                //return JSON.stringify({time:measurement.dateTime,value:measurement.value});
 
-            //iterate array to latest sleep status and return it.
-            //will be either awake or asleep during live recording.
-            sleepStatus =(measurement.value);
-            return sleepStatus;
-
-        }
-    );
+                //iterate array to latest sleep status and return it.
+                //will be either awake or asleep during live recording.
+                sleepStatus =(measurement.value); //will be asleep during demo.
+                return sleepStatus;
+            }
+        );
+    }
 };
 
 //Curried function takes in returned value.
@@ -93,7 +99,7 @@ var curSleepStatus = function(timeSeries){
             $.ajax({url: r.url, type: r.type, contentType: "application/json", data: Json});
             console.log("" +uName +" woke up. Message sent.");
         }
-        $('#asleep').prop('checked', false);
+        $('#awake').prop('checked', true);
         asleep = false;
         console.log(""+uName +" is awake.");
     }

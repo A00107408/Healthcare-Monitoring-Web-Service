@@ -81,6 +81,7 @@ var wrapSendJson = function(timeSeries){
 };
 
 
+
 // Use fetch API to GET Heart Rates from cloud.
 // fetch not compatible with IE.
 // Use token in header for OAuth 2.0 authentication.
