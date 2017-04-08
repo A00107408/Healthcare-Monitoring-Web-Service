@@ -101,6 +101,53 @@ fetch(
     console.log(error);             //any errors.
 });
 
+
 $( document ).ready(function(){
+
     uName = document.getElementById('uName').innerHTML;
+    var d = jsRoutes.controllers.UserController.deleteUser(uName);
+    var u = jsRoutes.controllers.UserController.editUser(uName);
+
+
+    // Using ajax to demo DELETE verb.
+    //Forms and buttons only support GET and POST.
+    $('#delete').click(function(){
+
+         if (window.confirm("Are you sure you want to permanently delete " +uName)){
+            $.ajax({
+                url: d.url ,
+                type: d.type,
+                success: function(data, textStatus, jqXHR){
+                    console.log("deleted successfully");
+                    window.location.href="http://localhost:9000/";
+                    alert(''+uName +' deleted. \nThank you for using Pulse Services.');
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    alert('delete user error: ' + textStatus);
+                }
+            });
+        }
+    });
+
+    // Using ajax to demo PUT verb.
+    //Forms and buttons only support GET and POST.
+  /*  $('#update').click(function(){
+
+        var Json = " {\"user\": \"" +uName +"\"}";
+
+            $.ajax({
+                url: u.url ,
+                type: "PUT",
+                contentType: "application/json",
+                data: Json,
+                success: function(data, textStatus, jqXHR){
+                    console.log("updated successfully");
+                    window.location.href="http://localhost:9000/editForm";
+                   // alert(''+uName +' deleted. \nThank you for using Pulse Services.');
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    alert('update user error: ' + textStatus);
+                }
+            });
+    });*/
 });

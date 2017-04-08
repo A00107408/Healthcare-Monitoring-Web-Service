@@ -11,6 +11,8 @@
 package models;
 
 import com.avaje.ebean.Model;
+import play.data.validation.Constraints;
+import play.data.validation.Constraints.Required;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,11 +30,15 @@ public class User extends Model {
     public Long id;
 
     public String name;
+
+    @Required
     public int age;
 
-    @Column(unique=true)
+    //@Column(unique=true)
+    @Required
     public String username;
 
+    @Required
     public String password;
 
     public static Find<Long,User> find = new Find<Long,User>(){};
@@ -54,5 +60,36 @@ public class User extends Model {
             }
         }
         return null;
+    }
+
+    // Check is new user is registering a unique username.
+    public static User IsUnique(String username){
+        User user = find.where().eq("username", username).findUnique();
+        if (user != null) {
+            return user;
+        }
+        return null;
+    }
+
+    public static Long EditUser(String username){
+
+        // get the user with username
+        User user = find.where().eq("username", username).findUnique(); //Crash if not unique!!
+        if (user != null) {
+            return user.id;
+        }
+        return Long.valueOf(0);
+    }
+
+    public static boolean DeleteUser(String username){
+
+        // get the user with username
+        User user = find.where().eq("username", username).findUnique(); //Crash if not unique!!
+        if (user != null) {
+            user.find.ref(user.id).delete();
+            System.out.println("returning true from model");
+            return true;
+        }
+        return false;
     }
 }

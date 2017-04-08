@@ -52,7 +52,7 @@ var plotLine = function(user, xs, ys){
          }, {
              name: 'Calories Burned',
              //data: [12908, 5948, 8105, 11248, 8989, 11816, 18274, 18111]
-             data: [ys[0], ys[11], ys[12], ys[13], ys[14], ys[15], ys[16], ys[17], ys[18]]
+             data: [ys[0], ys[11], ys[12], ys[13], ys[14], ys[15], ys[16], ys[17]]
          }]
 
     });

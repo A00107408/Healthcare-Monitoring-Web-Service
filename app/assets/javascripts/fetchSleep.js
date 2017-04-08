@@ -10,11 +10,6 @@
 
 var fitbitAccessToken;
 
-// For the project demo,
-// the sleep log status will be asleep.
-var asleep = true;
-
-
 // Get FitBit OAuth 2.0 token.
 // Using my app id = 2282KN.
 // Request access to all data entry points and redirect to localhost/dashboard.
@@ -67,12 +62,9 @@ var extractStatus = function(timeSeries) {
 //Curried function takes in returned value.
 var curSleepStatus = function(timeSeries){
 
-    var r = jsRoutes.controllers.SMSController.sleepChange();
+    var r = jsRoutes.controllers.SMSController.Warning();
     var uName = document.getElementById('uName').innerHTML;
-    var bpm = document.getElementById('bpm').innerHTML;
-    var msg;
     var Json;
-
 
     //allow user AND automated status change.
     if(document.getElementById('asleep').checked){ //jQuery not working here
@@ -84,45 +76,26 @@ var curSleepStatus = function(timeSeries){
 
     //FitBit API documentation. 1 = asleep.
     if(sleepStatus == 1){
-        console.log(""+uName+" : is asleep.");
-        if (asleep === false && bpm > 40){
-            //send sms. user just fell aslweep.
+        if(asleep === false){
             Json = " {\"user\": \"" +uName +"\"," +" \"status\": \"ASLEEP\"}";
-            console.log("" +uName +" fell asleep. Message sent.");
             $.ajax({url: r.url, type: r.type, contentType: "application/json", data: Json});
-        }else if(bpm <= 40){
-            //wearer may be dying or supreme Athlete
-            if(bpm === 0){
-                //wearer dead.
-                Json = " {\"user\": \"" +uName +"\"," +" \"status\": \"DEAD\"}";
-                console.log("" +uName +" has died. Message sent.");
-                $.ajax({url: r.url, type: r.type, contentType: "application/json", data: Json});
-
-                $('#asleep').prop('checked', true);
-                asleep = true;
-                return;
-            }
-
-            if(bpm){
-               Json = " {\"user\": \"" +uName +"\"," +" \"status\": \"DYING\"}";
-               console.log("" +uName +" dying. Message sent. BPM: " +bpm);
-               $.ajax({url: r.url, type: r.type, contentType: "application/json", data: Json});
-            }
-
+            console.log("" +uName +" fell asleep. Message sent.");
         }
         $('#asleep').prop('checked', true);
         asleep = true;
+        console.log(""+uName +" is asleep.");
     }
 
     if(sleepStatus == 3){ // 3 = awake.
         if (asleep === true){
             //send sms
             Json = " {\"user\": \"" +uName +"\"}" +" {\"status\": \"AWAKE\"}";
-            console.log("" +uName +" woke up. Message sent.");
             $.ajax({url: r.url, type: r.type, contentType: "application/json", data: Json});
+            console.log("" +uName +" woke up. Message sent.");
         }
         $('#asleep').prop('checked', false);
         asleep = false;
+        console.log(""+uName +" is awake.");
     }
 };
 

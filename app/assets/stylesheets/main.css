@@ -840,6 +840,20 @@ color: #FFAD00;
     left: 150px;
 }
 
+#edit{
+    position: relative;
+    border-style: solid;
+    border-color: black;
+    border-width: 3px;
+    border-radius: 10px;
+    background-color: lightGrey;
+    padding: 20px;
+    width: 70%;
+    height: 70%;
+    top: 130px;
+    left: 150px;
+}
+
 #aboutContainer h2{
     font-size: 300%;
     color: orange;
@@ -951,7 +965,7 @@ color: #FFAD00;
     width: 70%
 }
 
-#logOut{
+#userAccount{
     padding: 10px;
     float: right;
 }

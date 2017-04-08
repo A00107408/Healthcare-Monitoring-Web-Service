@@ -12,62 +12,17 @@ import java.util.Objects;
 
 public class SMSController extends Controller {
 
-
-   private String user = "NONE";
-   private String msg = "OK";
+    private String user = "NONE";
+    private String msg = "OK";
 
     /**
      * Construct SMS warning content based on JSon values
      * POSTed from the front end.
      * @return The SMS content to the app.
      */
-    public Result HRLow(){
+    public Result Warning(){
 
         //System.out.println("json posted in");
-        JsonNode json = request().body().asJson();
-        if(json == null) {
-            System.out.println("Expecting Json data.");
-        } else {
-            user = json.findPath("user").textValue();
-            if(user == null) {
-                System.out.println("Missing parameter [user]");
-            } else {
-                msg = "LOW";
-            }
-        }
-        return (ok());
-    }
-
-    /**
-     * Construct SMS warning content based on JSon values
-     * POSTed from the front end.
-     * @return The SMS content to the app.
-     */
-    public Result HRHigh(){
-
-       // System.out.println("json posted in");
-        JsonNode json = request().body().asJson();
-        if(json == null) {
-            System.out.println("Expecting Json data.");
-        } else {
-            user = json.findPath("user").textValue();
-            if(user == null) {
-                System.out.println("Missing parameter [user]");
-            } else {
-                msg = "HIGH";
-            }
-        }
-        return (ok());
-    }
-
-    /**
-     * Construct SMS warning content based on JSon values
-     * POSTed from the front end.
-     * @return The SMS content to the app.
-     */
-    public Result sleepChange(){
-
-        System.out.println("json posted into sleepChange");
         JsonNode json = request().body().asJson();
         if(json == null) {
             System.out.println("Expecting Json data.");

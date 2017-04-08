@@ -1,0 +1,27 @@
+@(userForm: Form[User], message: String, id: Long, uname: String)
+
+@import helper._
+
+@import b3.vertical.fieldConstructor
+
+@main("Update") {
+
+ <div id="edit">
+    <h1>@message</h1>
+
+    @b3.form(routes.UserController.updateUser(id, uname)) {
+
+    <fieldset>
+        @b3.text(userForm("name"), '_label -> "User's name", '_help -> "")
+        @b3.number(userForm("age"), '_label -> "User's age", '_help -> "Required")
+        @b3.text(userForm("username"), '_label -> "Username", '_help -> "Unique")
+        @b3.password(userForm("password"), '_label -> "Password", '_help -> "Required")
+    </fieldset>
+
+    <div class="actions">
+        <input type="submit" value="Update User" class="btn primary"> or
+        <a href="@routes.HomeController.index()" class="btn">Home</a>
+    </div>
+   }
+  </div>
+}

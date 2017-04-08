@@ -20,11 +20,11 @@ class JavaRoutesController extends Controller{
         routes.javascript.HRController.findAll,
         routes.javascript.CalorieController.createBulkFromJson,
         routes.javascript.CalorieController.findAll,
-        routes.javascript.SMSController.HRHigh,
-        routes.javascript.SMSController.HRLow,
-        routes.javascript.SMSController.sleepChange,
+        routes.javascript.SMSController.Warning,
         routes.javascript.HRController.writeHistoricalHR,
-        routes.javascript.HRController.readHistoricalHR
+        routes.javascript.HRController.readHistoricalHR,
+        routes.javascript.UserController.editUser,
+        routes.javascript.UserController.deleteUser
       )
     ).as("text/javascript")
   }

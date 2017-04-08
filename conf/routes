@@ -4,15 +4,19 @@ GET     /contact                    controllers.HomeController.contactUs
 
 GET     /users/new                  controllers.UserController.createUser
 POST    /users                      controllers.UserController.saveUser
+
+GET     /editUsers                  controllers.UserController.editUser(user: String)
+POST    /editUsers                  controllers.UserController.updateUser(id: Long, uname: String)
+DELETE  /editUsers                  controllers.UserController.deleteUser(user: String)
 POST    /androidUsers               controllers.UserController.saveAndroidUser
 
 GET     /login                      controllers.UserController.login
 POST    /login                      controllers.UserController.validate
 POST    /logout                     controllers.UserController.logout
 
-GET     /dashboard                  controllers.UserController.dashboard()
+GET     /dashboard                  controllers.UserController.dashboard
 
-#POST    /heartrates                 controllers.HRController.createFromJson
+POST    /heartrates                 controllers.HRController.createFromJson
 POST    /heartrates/bulk            controllers.HRController.createBulkFromJson
 GET     /heartrates                 controllers.HRController.findAll(user: String)
 POST    /heartrates/master          controllers.HRController.writeHistoricalHR
@@ -22,9 +26,7 @@ POST    /calories/bulk              controllers.CalorieController.createBulkFrom
 GET     /calories                   controllers.CalorieController.findAll(user: String)
 
 POST    /androidLogin               controllers.UserController.androidValidate
-POST    /androidHRLow               controllers.SMSController.HRLow
-POST    /androidHRHigh              controllers.SMSController.HRHigh
-POST    /androidAwoke               controllers.SMSController.sleepChange
+POST    /androidWarning             controllers.SMSController.Warning
 GET     /androidListen              controllers.SMSController.volleyResponse
 
 GET     /javascriptRoutes           controllers.JavaRoutesController.javascriptRoutes

@@ -6,12 +6,14 @@
  * Credits:
  * HighCharts Interactive Spline :-
  * http://www.highcharts.com/demo/dynamic-update
+ *
+ * Definition:
+ * Tachycardia: https://en.wikipedia.org/wiki/Tachycardia
  */
 
-var plotSpline = function(user, xs, ys){
+var plotSpline = function(user, xs, ys, Tachycardia){
 
-    var a = jsRoutes.controllers.SMSController.HRLow();
-    var b = jsRoutes.controllers.SMSController.HRHigh();
+    var r = jsRoutes.controllers.SMSController.Warning();
 
     Highcharts.setOptions({
         global: {
@@ -31,40 +33,75 @@ var plotSpline = function(user, xs, ys){
                    var series = this.series[0];
                    var index=0;
                    var res = document.getElementById('HRMessage');
-                   var bpm = document.getElementById('bpm');
 
-                   fetchSleep(); // can depend on BPM for SMS.
-                   $('#asleep').prop('checked', true);
+                   fetchSleep(); // kick start sleep check.
 
                    setInterval(function () {
 
                         var lowerBPM = $('#lowerBPM').val();
                         var upperBPM = $('#upperBPM').val();
+                        var Json;
 
                         var x = (new Date()).getTime(), //xs[index],
-                            y = parseInt(ys[index]);    // parseInt to counteract typedef error in console?
+                            y = ys[index];
+
+                        res.style.color = '#89C057';
+                        res.innerHTML = "BPM in Range.";
+
                         if (y < lowerBPM ){
                             res.style.color = "blue";
-                            res.innerHTML = "Heart Rate too Low. SMS Sent.";
-
-                            var Json = " {\"user\": \"" +user +"\"}";
+                            res.innerHTML = "Heart Rate Below Set Threshold: SMS Sent.";
+                            Json = " {\"user\": \"" +user +"\"," +" \"status\": \"LOW\"}";
+                            $.ajax({url: r.url, type: r.type, contentType: "application/json", data: Json});
                             console.log("BPM outside Range for " +user +". Warning sent.");
-                            $.ajax({url: a.url, type: a.type, contentType: "application/json", data: Json});
                         }
-                        else if (y > upperBPM){
+                        if(y > upperBPM){
                             res.style.color = "red";
-                            res.innerHTML = "Heart Rate too High. SMS Sent.";
-
-                            var Jsonb = " {\"user\": \"" +user +"\"}";
+                            res.innerHTML = "" +uName +"'s BPM Above Set Threshold: SMS Sent.";
+                            Json = " {\"user\": \"" +user +"\"," +" \"status\": \"HIGH\"}";
                             console.log("BPM outside Range for " +user +". Warning sent.");
-                            $.ajax({url: b.url, type: b.type, contentType: "application/json", data: Jsonb});
+                            $.ajax({url: r.url, type: r.type, contentType: "application/json", data: Json});
                         }
-                        else{
+
+                        if(y === 0){
+                            //wearer died in transit??? Still Moving re: accelerometer??
                             res.style.color = "black";
-                            res.innerHTML = "BPM in Range.";
+                            res.innerHTML = "" +uName +"has died. SMS sent to ICE";
+                            Json = " {\"user\": \"" +uName +"\"," +" \"status\": \"DEAD\"}";
+                            console.log("" +uName +" has died. Message sent.");
+                            $.ajax({url: r.url, type: r.type, contentType: "application/json", data: Json});
                         }
+
+                        // Special Cases.
+                        // If user is 'Asleep'.
+                        // Will take precedent over larger thresholds.
+                        if($('#asleep').prop('checked') === true){
+                            if(y < 40){  //Bradycardia
+                                if(y === 0){
+                                    //wearer dead.
+                                    res.style.color = "black";
+                                    res.innerHTML = "" +uName +"has died. SMS sent to ICE";
+                                    Json = " {\"user\": \"" +uName +"\"," +" \"status\": \"DEAD\"}";
+                                    console.log("" +uName +" has died. Message sent.");
+                                    $.ajax({url: r.url, type: r.type, contentType: "application/json", data: Json});
+                                }else{
+                                    res.style.color = "blue";
+                                    res.innerHTML = "Bradycardia Detected: SMS Sent.";
+                                    Json = " {\"user\": \"" +uName +"\"," +" \"status\": \"BRADY\"}";
+                                    console.log("" +uName +" has Bradycardia. Message sent. BPM: " +y);
+                                    $.ajax({url: r.url, type: r.type, contentType: "application/json", data: Json});
+                                }
+                            }
+                            if(y > Tachycardia){
+                                res.style.color = '#B33A3A';
+                                res.innerHTML = "Tachycardia Detected: SMS Sent.";
+                                Json = " {\"user\": \"" +uName +"\"," +" \"status\": \"TACHY\"}";
+                                console.log("" +uName +" has Tachycardia. Message sent. BPM: " +y);
+                                $.ajax({url: r.url, type: r.type, contentType: "application/json", data: Json});
+                            }
+                        }
+
                         series.addPoint([x, y], true, true);
-                        bpm.innerHTML = ys[index];
                         index++;
                    }, 1000);
                }
@@ -137,6 +174,20 @@ var getMongoHR = function(user){
     var ys = [];
     var r = jsRoutes.controllers.HRController.findAll(user);
 
+    //var age = document.getElementById('age').innerHTML;
+    var Tachycardia;
+
+    //https://en.wikipedia.org/wiki/Tachycardia
+    switch(true){
+        case (age >= 15): Tachycardia = 100; break;
+        case (age < 15 && age > 12) : Tachycardia = 119; break;
+        case (age <= 12 && age > 8) : Tachycardia = 130; break;
+        case (age <= 8 && age > 5) : Tachycardia = 133; break;
+        case (age <= 5 && age > 3) : Tachycardia = 137; break;
+        case (age <= 3 && age >= 1) : Tachycardia = 151; break;
+    }
+
+    console.log("Tach: " +Tachycardia);
 
     // Ajax GET from MongoDB.
     $.getJSON( r.url, function( data ) {
@@ -171,6 +222,6 @@ var getMongoHR = function(user){
             ys[i] = parseInt(yAxis[i]);
         }
 
-        plotSpline(user, xs, ys);
+        plotSpline(user, xs, ys, Tachycardia);
     });
 };
