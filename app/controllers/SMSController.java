@@ -30,7 +30,7 @@ public class SMSController extends Controller {
      */
     public Result Warning(){
 
-        System.out.println("json posted in");
+        //System.out.println("json posted in");
         JsonNode json = request().body().asJson();
         if(json == null) {
             System.out.println("Expecting Json data.");
@@ -40,7 +40,6 @@ public class SMSController extends Controller {
                 System.out.println("Missing parameter [user]");
             } else {
                 msg = json.findPath("status").textValue();
-                System.out.println("Sleep Status: " +msg);
                 if(msg == null) {
                     System.out.println("Missing parameter [msg]");
                 }else {

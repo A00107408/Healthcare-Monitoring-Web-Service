@@ -25,8 +25,7 @@ import reactivemongo.play.json.collection.JSONCollection
 import scala.concurrent.{ExecutionContext, Future}
 import System.out.{println => puts}
 
-import akka.actor.FSM.Failure
-import akka.actor.Status.Success
+import play.api.libs.json.Json._
 import reactivemongo.bson.BSONDocument
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -139,13 +138,13 @@ class HRController @Inject()(val reactiveMongoApi: ReactiveMongoApi)(implicit ex
       val cursor: Future[List[JsObject]] = hrFuture.flatMap { heartrates =>
 
           /**Find All Heart Rates for given user*/
-          heartrates.find(Json.obj("user" -> user)).
+          heartrates.find(obj("user" -> user)).
 
           /**Find All Heart Rates*/
           //  heartrates.find(Json.obj()).
 
           /**Sort them by creation date*/
-          sort(Json.obj("created" -> 1)).
+          sort(obj("created" -> 1)).
 
           /**perform the query and get a cursor of JsObject*/
           cursor[JsObject](ReadPreference.primary).collect[List]()
@@ -153,21 +152,17 @@ class HRController @Inject()(val reactiveMongoApi: ReactiveMongoApi)(implicit ex
 
       // everything's ok! Let's reply with a JsValue
       cursor.map { heartrates =>
-        Ok(Json.toJson(heartrates))
+        Ok(toJson(heartrates))
       }
   }
 
   def deleteAll(user: String){
     val selector = BSONDocument("user" -> user)
 
-   /* val futureRemove = collection.remove(selector)
+    //val cursor: Future[List[JsObject]] = hrFuture.flatMap { heartrates =>
+       // heartrates.remove(obj("user" -> user))
+    //}
 
-     futureRemove.onComplete {
-      case Failure(e) => throw e
-        case Success(lasterror) => {
-        println("successfully removed document")
-      }
-    }*/
   }
 
   /**
@@ -181,13 +176,13 @@ class HRController @Inject()(val reactiveMongoApi: ReactiveMongoApi)(implicit ex
         puts("Master username: " +user)
 
           /**Find All Heart Rates for given user*/
-          heartrates.find(Json.obj("user" -> user)).
+          heartrates.find(obj("user" -> user)).
 
           /**Find All Heart Rates*/
           // heartrates.find(Json.obj()).
 
           /**Sort them by creation date*/
-          sort(Json.obj("created" -> 1)).
+          sort(obj("created" -> 1)).
 
           /**perform the query and get a cursor of JsObject*/
           cursor[JsObject](ReadPreference.primary).collect[List]()
@@ -195,7 +190,7 @@ class HRController @Inject()(val reactiveMongoApi: ReactiveMongoApi)(implicit ex
 
       // everything's ok! Let's reply with a JsValue
       cursor.map { heartrates =>
-        Ok(Json.toJson(heartrates))
+        Ok(toJson(heartrates))
       }
   }
 }

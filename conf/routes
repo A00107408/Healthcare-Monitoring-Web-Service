@@ -12,7 +12,7 @@ POST    /androidUsers               controllers.UserController.saveAndroidUser
 
 GET     /login                      controllers.UserController.login
 POST    /login                      controllers.UserController.validate
-POST    /logout                     controllers.UserController.logout
+GET     /logout                     controllers.UserController.logout()
 
 GET     /dashboard                  controllers.UserController.dashboard
 
