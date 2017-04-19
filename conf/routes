@@ -27,7 +27,8 @@ GET     /calories                   controllers.CalorieController.findAll(user: 
 
 POST    /androidLogin               controllers.UserController.androidValidate
 POST    /androidWarning             controllers.SMSController.Warning
-GET     /androidListen              controllers.SMSController.volleyResponse
+GET     /androidListen:user         controllers.SMSController.volleyResponse(user: String)
+GET     /androidClear:user          controllers.SMSController.Clear(user: String)
 
 GET     /javascriptRoutes           controllers.JavaRoutesController.javascriptRoutes
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

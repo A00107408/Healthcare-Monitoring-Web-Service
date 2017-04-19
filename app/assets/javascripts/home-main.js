@@ -10,11 +10,11 @@ $(function() {
 
     $(".sidemenu").fly_sidemenu();
 
-    $('#signupButton').click(function(){
+ /*   $('#signupButton').click(function(){
         $(".main").moveTo(3);
     });
 
     $('#loginButton').click(function(){
         $(".main").moveTo(3);
-    });
+    });*/
 });

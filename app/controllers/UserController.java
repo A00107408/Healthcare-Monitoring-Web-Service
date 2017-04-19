@@ -3,27 +3,19 @@ package controllers;
 
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.Transaction;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.util.concurrent.Service;
-import com.sun.javafx.property.adapter.PropertyDescriptor;
 import models.User;
-import play.api.libs.json.Json;
 import play.data.Form;
 import play.data.FormFactory;
 import play.data.validation.ValidationError;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.index;
-import views.html.loginForm;
 
 import javax.inject.Inject;
 import javax.persistence.PersistenceException;
-import javax.xml.ws.Response;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static models.User.find;
 
 
 /**
@@ -123,7 +115,6 @@ public class UserController extends Controller {
         Long id;
         User user = null;
         id = User.EditUser(username);
-        System.out.println("in edit: " +username);
         if(id != 0) {
             Form<User> editForm = formFactory.form(User.class).fill(User.find.byId(id));
             return ok(views.html.editForm.render(editForm, "Update User:", id, username));

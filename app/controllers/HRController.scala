@@ -25,6 +25,10 @@ import reactivemongo.play.json.collection.JSONCollection
 import scala.concurrent.{ExecutionContext, Future}
 import System.out.{println => puts}
 
+import akka.actor.FSM.Failure
+import akka.actor.Status.Success
+import reactivemongo.bson.BSONDocument
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 /**
@@ -153,18 +157,18 @@ class HRController @Inject()(val reactiveMongoApi: ReactiveMongoApi)(implicit ex
       }
   }
 
-/**  def deleteAll(user: String){
+  def deleteAll(user: String){
+    val selector = BSONDocument("user" -> user)
 
-    heartRate <- hrFuture
-    val selector1 = BSONDocument("user" -> user)
+   /* val futureRemove = collection.remove(selector)
 
-    val futureRemove1 = heartRate.remove(selector1)
-
-    futureRemove1.onComplete { // callback
+     futureRemove.onComplete {
       case Failure(e) => throw e
-      case Success(writeResult) => println("successfully removed document")
-    }
-  }*/
+        case Success(lasterror) => {
+        println("successfully removed document")
+      }
+    }*/
+  }
 
   /**
     * A Scala method to read all heart rates from the master collection

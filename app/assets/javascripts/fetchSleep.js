@@ -49,7 +49,7 @@ var extractStatus = function(timeSeries) {
     //FitBit API sleep log starts AND ends with sleep state.
     //For Demo, generate random awake state.
     var x = Math.random(); //between 0 & 1.
-    if(x > 0.7){ //30% chance of wearer waking up.
+    if(x > 0.5){ //50% chance of wearer waking up.
         sleepStatus = 3; // generate random awake for demo.
     }else{
         return timeSeries.sleep[0].minuteData.map(
@@ -95,7 +95,7 @@ var curSleepStatus = function(timeSeries){
     if(sleepStatus == 3){ // 3 = awake.
         if (asleep === true){
             //send sms
-            Json = " {\"user\": \"" +uName +"\"}" +" {\"status\": \"AWAKE\"}";
+            Json = " {\"user\": \"" +uName +"\"," +" \"status\": \"AWAKE\"}";
             $.ajax({url: r.url, type: r.type, contentType: "application/json", data: Json});
             console.log("" +uName +" woke up. Message sent.");
         }

@@ -34,7 +34,6 @@ public class User extends Model {
     @Required
     public int age;
 
-    //@Column(unique=true)
     @Required
     public String username;
 

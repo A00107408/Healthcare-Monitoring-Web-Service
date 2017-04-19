@@ -102,7 +102,6 @@ fetch(
     console.log(error);             //any errors.
 });
 
-
 $( document ).ready(function(){
 
     uName = document.getElementById('uName').innerHTML;
